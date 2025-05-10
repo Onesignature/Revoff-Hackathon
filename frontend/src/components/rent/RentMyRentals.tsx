@@ -5,22 +5,22 @@ const RentMyRentals: React.FC = () => {
   const activeRentals = [
     {
       id: 1,
-      car: "Porsche 911 GT3 RS",
-      image: "https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg",
+      car: "Mercedes-AMG GT",
+      image: "/mercedes/amg-gt.jpg",
       location: "Dubai Marina",
       startDate: "2024-03-15",
       endDate: "2024-03-22",
-      price: 1500,
+      price: 1800,
       status: "active"
     },
     {
       id: 2,
-      car: "Lamborghini Urus",
-      image: "https://images.pexels.com/photos/3786091/pexels-photo-3786091.jpeg",
+      car: "Mercedes-Benz S-Class",
+      image: "/mercedes/sclass.jpg",
       location: "Downtown Dubai",
       startDate: "2024-03-18",
       endDate: "2024-03-25",
-      price: 2000,
+      price: 1500,
       status: "upcoming"
     }
   ];

@@ -5,25 +5,25 @@ const RentHistory: React.FC = () => {
   const rentalHistory = [
     {
       id: 1,
-      car: "Porsche 911 GT3 RS",
-      image: "https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg",
+      car: "Mercedes-AMG GT",
+      image: "/mercedes/amg-gt.jpg",
       location: "Dubai Marina",
       startDate: "2024-02-15",
       endDate: "2024-02-22",
-      price: 10500,
+      price: 12600,
       rating: 5,
-      review: "Amazing experience! The car was in perfect condition."
+      review: "Amazing experience! The AMG GT was in perfect condition and delivered exhilarating performance."
     },
     {
       id: 2,
-      car: "Lamborghini Urus",
-      image: "https://images.pexels.com/photos/3786091/pexels-photo-3786091.jpeg",
+      car: "Mercedes-AMG G63",
+      image: "/mercedes/g63.webp",
       location: "Downtown Dubai",
       startDate: "2024-01-10",
       endDate: "2024-01-17",
-      price: 14000,
+      price: 17500,
       rating: 4,
-      review: "Great SUV, perfect for city driving."
+      review: "The G63 is an absolute beast! Perfect for Dubai's roads with a luxurious and commanding presence."
     }
   ];
 
