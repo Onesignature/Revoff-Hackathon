@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const path = require('path');
 const cors = require('cors');
 const { errorHandler, notFound } = require('./middleware/errorMiddleware');
+const { swaggerUi, swaggerDocs } = require('./swagger');
 
 // Import routes
 const serverRoutes = require('./routes/serverRoutes');
@@ -38,6 +39,9 @@ app.use('/api/server', serverRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/chat', chatRoutes);
 
+// Swagger API Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs, { explorer: true }));
+
 // For backward compatibility
 app.get('/api/health', (req, res) => {
   res.redirect('/api/server/health');
@@ -56,7 +60,8 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
   console.log('Available endpoints:');
-  console.log('- GET / - Welcome message');  console.log('- GET /api/server/health - Health check');
+  console.log('- GET / - Welcome message');  
+  console.log('- GET /api/server/health - Health check');
   console.log('- GET /api/server/env - Environment variables');
   console.log('- GET /api/server/info - Server information');
   console.log('- GET /api/products - Get all products');
@@ -66,5 +71,6 @@ app.listen(PORT, () => {
   console.log('- POST /api/chat/stream - Send a message with streaming response');
   console.log('- GET /api/chat/history/:userId - Get chat history');
   console.log('- DELETE /api/chat/history/:userId - Clear chat history');
+  console.log('- GET /api-docs - Swagger API documentation');
 });
 
