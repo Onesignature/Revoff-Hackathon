@@ -687,7 +687,7 @@ const AIWealthManager: React.FC = () => {
                 opportunityAnalysis.topOpportunities.map((opportunity, index) => (
                   <div key={index} className="flex flex-col md:flex-row items-start md:items-center gap-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl hover:shadow-lg transition-shadow">
                     <img
-                      src={opportunity.imageUrl ? `${opportunity.imageUrl}` : `https://source.unsplash.com/random/400x400?luxurycar&sig=${index}`}
+                      src={opportunity.imageUrl ? `/${opportunity.imageUrl}` : `https://source.unsplash.com/random/400x400?luxurycar&sig=${index}`}
                       alt={opportunity.vehicle}
                       className="w-full md:w-24 h-24 object-cover rounded-lg flex-shrink-0 border border-gray-200 dark:border-gray-700"
                     />
