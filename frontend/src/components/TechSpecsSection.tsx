@@ -24,7 +24,7 @@ const TechSpecsSection: React.FC = () => {
 
           <div className="rounded-3xl overflow-hidden bg-red-50 p-8">
             <img 
-              src="https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg?auto=compress&cs=tinysrgb&w=1200" 
+              src="lambo.png" 
               alt="Engine" 
               className="w-full h-[400px] object-cover rounded-2xl"
             />
