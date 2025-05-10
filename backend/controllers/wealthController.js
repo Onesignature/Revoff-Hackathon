@@ -34,7 +34,7 @@ const analyzePortfolio = async (req, res) => {
     if (analysisType === 'risk') {
       systemMessage = 'You are an expert financial advisor specializing in risk analysis for luxury vehicle investments. Analyze the data and provide detailed risk assessment.';
     } else if (analysisType === 'opportunity') {
-      systemMessage = 'You are an expert financial advisor specializing in identifying investment opportunities in the luxury vehicle market. Analyze the data and suggest the best investment opportunities.';
+      systemMessage = 'You are an expert financial advisor specializing in identifying investment opportunities in the luxury vehicle market. Analyze the provided market data and user profile. Suggest a diverse list of top investment opportunities. Please ensure variety in the vehicle models you recommend, especially across different interactions, even if input data points share similarities. Focus on providing a fresh set of recommendations each time.';
     } else if (analysisType === 'performance') {
       systemMessage = 'You are an expert financial advisor specializing in evaluating portfolio performance for luxury vehicle investments. Analyze the data and provide insights on current performance and future projections.';
     } else {
@@ -291,7 +291,8 @@ const analyzePortfolio = async (req, res) => {
       response_format: {
         type: "json_object",
         schema: schema
-      }
+      },
+      temperature: 0.8 // Added to introduce more variability in AI responses
     });    // Parse the JSON response
     const analysisResult = JSON.parse(response.choices[0].message.content);
     
