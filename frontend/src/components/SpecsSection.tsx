@@ -37,7 +37,7 @@ const SpecsSection: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div className="rounded-3xl overflow-hidden">
             <img 
-              src="https://images.pexels.com/photos/3786091/pexels-photo-3786091.jpeg?auto=compress&cs=tinysrgb&w=1200"
+              src="/mercedes/sclass.jpg"
               alt="Car Performance"
               className="w-full h-[500px] object-cover"
             />

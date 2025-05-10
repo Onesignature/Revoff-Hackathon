@@ -5,22 +5,22 @@ const RentFavorites: React.FC = () => {
   const favorites = [
     {
       id: 1,
-      car: "Porsche 911 GT3 RS",
-      image: "https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg",
+      car: "Mercedes-AMG C63",
+      image: "/mercedes/c63.webp",
       location: "Dubai Marina",
-      price: 1500,
+      price: 1700,
       rating: 4.9,
-      reviews: 124,
+      reviews: 118,
       available: true
     },
     {
       id: 2,
-      car: "Lamborghini Urus",
-      image: "https://images.pexels.com/photos/3786091/pexels-photo-3786091.jpeg",
+      car: "Mercedes-AMG C63 Red Edition",
+      image: "/mercedes/c63red.webp",
       location: "Downtown Dubai",
-      price: 2000,
+      price: 1800,
       rating: 4.8,
-      reviews: 98,
+      reviews: 92,
       available: false
     }
   ];

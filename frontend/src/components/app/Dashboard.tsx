@@ -137,27 +137,27 @@ const Dashboard: React.FC = () => {
           </div>
           
           <p className="text-lg mb-6">
-            Can you help me find a reliable car under AED 36,725 with good mileage
+            Can you help me find a Mercedes vehicle under AED 36,725 with good mileage
             <span className="text-gray-400"> and features?</span>
           </p>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-red-600 text-white rounded-xl p-4">
               <img 
-                src="https://images.pexels.com/photos/3752169/pexels-photo-3752169.jpeg" 
-                alt="BMW 3 Series" 
+                src="/mercedes/cle.jpg" 
+                alt="Mercedes-Benz CLE" 
                 className="w-full h-32 object-cover rounded-lg mb-3"
               />
-              <h3 className="font-medium">BMW 3 Series 2014</h3>
+              <h3 className="font-medium">Mercedes-Benz CLE 2023</h3>
               <p className="text-lg font-semibold">AED 30,683</p>
             </div>
             <div className="bg-white border border-gray-100 rounded-xl p-4">
               <img 
-                src="https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg" 
-                alt="Chevrolet Colorado" 
+                src="/mercedes/c63red.webp" 
+                alt="Mercedes-AMG C63" 
                 className="w-full h-32 object-cover rounded-lg mb-3"
               />
-              <h3 className="font-medium">Chevrolet Colorado</h3>
+              <h3 className="font-medium">Mercedes-AMG C63</h3>
               <p className="text-lg font-semibold">AED 34,889</p>
             </div>
           </div>
@@ -187,14 +187,14 @@ const Dashboard: React.FC = () => {
         {/* Car Details Section */}
         <div className="bg-white rounded-xl p-6">
           <div className="flex items-center gap-3 mb-6">
-            <h2 className="text-xl font-medium">BMW 3 Series 2014</h2>
-            <span className="text-sm text-gray-500">F30 · 328i AT</span>
+            <h2 className="text-xl font-medium">Mercedes-Benz CLE 2023</h2>
+            <span className="text-sm text-gray-500">AMG Line · 2.0L</span>
           </div>
 
           <div className="relative mb-6 h-[300px]">
             <img 
-              src='/urus.jpg' 
-              alt="BMW 3 Series" 
+              src='/mercedes/cle.jpg' 
+              alt="Mercedes-Benz CLE" 
               className="w-full h-full object-cover rounded-xl"
             />
           </div>
@@ -219,7 +219,7 @@ const Dashboard: React.FC = () => {
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium">12,000 km</p>
+                <p className="text-sm font-medium">8,500 km</p>
                 <p className="text-xs text-gray-500">Mileage of the car</p>
               </div>
             </div>
@@ -230,7 +230,7 @@ const Dashboard: React.FC = () => {
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium">2 liters · Gasoline</p>
+                <p className="text-sm font-medium">2.0L · Turbocharged</p>
                 <p className="text-xs text-gray-500">The engine</p>
               </div>
             </div>

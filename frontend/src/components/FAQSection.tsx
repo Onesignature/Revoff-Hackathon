@@ -14,7 +14,7 @@ const FAQSection: React.FC = () => {
             <div>
               <div className="flex flex-col sm:flex-row items-start gap-4 mb-6">
                 <img 
-                  src="https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg?auto=compress&cs=tinysrgb&w=600"
+                  src="/mercedes/amg-gt.jpg"
                   alt="Performance" 
                   className="w-full sm:w-32 h-48 sm:h-24 object-cover rounded-xl"
                 />
@@ -49,7 +49,7 @@ const FAQSection: React.FC = () => {
 
             <div className="relative rounded-3xl overflow-hidden">
               <img 
-                src="https://images.pexels.com/photos/3786091/pexels-photo-3786091.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                src="/mercedes/amg-gt.jpg"
                 alt="REVOFF Experience"
                 className="w-full h-[400px] object-cover"
               />

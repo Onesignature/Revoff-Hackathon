@@ -5,25 +5,36 @@ const Portfolio: React.FC = () => {
   const carStakes = [
     {
       id: 1,
-      name: 'Lamborghini Urus 2024',
+      name: 'Alfa Romeo Giulia Quadrifoglio',
       location: 'Dubai',
       investmentValue: 125000,
       totalRentalIncome: 12500,
       status: 'Active',
-      image: 'https://images.pexels.com/photos/3786091/pexels-photo-3786091.jpeg',
+      image: '/mercedes/romeo.jpg',
       appreciation: 15.2,
       monthlyYield: 8.5
     },
     {
       id: 2,
-      name: 'Porsche 911 GT3 RS',
+      name: 'Mercedes-Benz S600',
       location: 'Dubai',
       investmentValue: 95000,
       totalRentalIncome: 9800,
       status: 'Active',
-      image: 'https://images.pexels.com/photos/3752169/pexels-photo-3752169.jpeg',
+      image: '/mercedes/s600.jpg',
       appreciation: 12.8,
       monthlyYield: 7.9
+    },
+    {
+      id: 3,
+      name: 'Mercedes-AMG G Class',
+      location: 'Dubai',
+      investmentValue: 140000,
+      totalRentalIncome: 15200,
+      status: 'Active',
+      image: '/mercedes/gclass.avif',
+      appreciation: 18.5,
+      monthlyYield: 9.2
     }
   ];
 
@@ -37,7 +48,7 @@ const Portfolio: React.FC = () => {
           Portfolio value
           <HelpCircle className="w-4 h-4" />
         </div>
-        <div className="text-3xl font-bold">AED 220,000</div>
+        <div className="text-3xl font-bold">AED 360,000</div>
       </div>
 
       {/* Key Financials */}
@@ -47,7 +58,7 @@ const Portfolio: React.FC = () => {
             Monthly income
             <HelpCircle className="w-4 h-4" />
           </div>
-          <div className="text-2xl font-bold">AED 1,850</div>
+          <div className="text-2xl font-bold">AED 2,750</div>
           <div className="text-sm text-gray-500 mt-1">Apr 2025</div>
         </div>
 
@@ -56,7 +67,7 @@ const Portfolio: React.FC = () => {
             Total rental income
             <HelpCircle className="w-4 h-4" />
           </div>
-          <div className="text-2xl font-bold">AED 22,300</div>
+          <div className="text-2xl font-bold">AED 37,500</div>
           <div className="text-sm text-gray-500 mt-1">as of Apr 2025</div>
         </div>
 
@@ -65,7 +76,7 @@ const Portfolio: React.FC = () => {
             Total appreciation
             <HelpCircle className="w-4 h-4" />
           </div>
-          <div className="text-2xl font-bold">AED 31,240</div>
+          <div className="text-2xl font-bold">AED 53,760</div>
           <div className="text-sm text-gray-500 mt-1">as of Apr 2025</div>
         </div>
       </div>
@@ -136,7 +147,7 @@ const Portfolio: React.FC = () => {
                 <Home className="w-5 h-5 text-red-600" />
               </div>
               <div className="text-gray-600">Number of vehicles</div>
-              <div className="text-2xl font-bold mt-1">2</div>
+              <div className="text-2xl font-bold mt-1">3</div>
             </div>
 
             <div className="bg-white rounded-xl p-6">
@@ -180,7 +191,7 @@ const Portfolio: React.FC = () => {
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between text-sm mb-1">
-                    <span>Luxury SUV Market</span>
+                    <span>Luxury Sedan Market</span>
                     <span className="text-emerald-600">Bullish</span>
                   </div>
                   <div className="h-2 bg-gray-100 rounded-full">
@@ -189,7 +200,7 @@ const Portfolio: React.FC = () => {
                 </div>
                 <div>
                   <div className="flex justify-between text-sm mb-1">
-                    <span>Sports Car Segment</span>
+                    <span>Performance Vehicles</span>
                     <span className="text-emerald-600">Very Bullish</span>
                   </div>
                   <div className="h-2 bg-gray-100 rounded-full">

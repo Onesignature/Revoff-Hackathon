@@ -13,35 +13,35 @@ interface Product {
 const products: Product[] = [
   {
     id: 1,
-    name: "GT3 RS",
+    name: "Mercedes-Maybach GLS 600",
     price: 225000,
     discountedPrice: 189000,
     discount: 15,
-    image: "https://images.pexels.com/photos/3752169/pexels-photo-3752169.jpeg?auto=compress&cs=tinysrgb&w=1200"
+    image: "/mercedes/maybach.avif"
   },
   {
     id: 2,
-    name: "GT2 RS",
+    name: "Mercedes-Benz EQS",
     price: 245000,
     discountedPrice: 209000,
     discount: 25,
-    image: "https://images.pexels.com/photos/3786091/pexels-photo-3786091.jpeg?auto=compress&cs=tinysrgb&w=1200"
+    image: "/mercedes/eqs.avif"
   },
   {
     id: 3,
-    name: "911 Turbo S",
+    name: "Mercedes-AMG C63",
     price: 198000,
     discountedPrice: 168000,
     discount: 30,
-    image: "https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg?auto=compress&cs=tinysrgb&w=1200"
+    image: "/mercedes/c63.webp"
   },
   {
     id: 4,
-    name: "Cayman GT4",
+    name: "Mercedes-AMG E63",
     price: 145000,
     discountedPrice: 123000,
     discount: 15,
-    image: "https://images.pexels.com/photos/3874337/pexels-photo-3874337.jpeg?auto=compress&cs=tinysrgb&w=1200"
+    image: "/mercedes/e63.jpg"
   }
 ];
 
@@ -104,10 +104,10 @@ const ProductsSection: React.FC = () => {
               
               <div className="flex items-baseline gap-3 mb-4">
                 <span className="text-xl font-bold text-red-600">
-                  ${product.discountedPrice.toLocaleString()}
+                  AED {product.discountedPrice.toLocaleString()}
                 </span>
                 <span className="text-gray-500 line-through">
-                  ${product.price.toLocaleString()}
+                  AED {product.price.toLocaleString()}
                 </span>
               </div>
 
