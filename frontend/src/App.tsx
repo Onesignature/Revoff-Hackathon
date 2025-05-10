@@ -11,6 +11,12 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
 import CookiePolicy from './components/CookiePolicy';
 import Rent from './components/Rent';
+import RentLayout from './components/rent/RentLayout';
+import RentDashboard from './components/rent/RentDashboard';
+import RentMyRentals from './components/rent/RentMyRentals';
+import RentPayments from './components/rent/RentPayments';
+import RentHistory from './components/rent/RentHistory';
+import RentFavorites from './components/rent/RentFavorites';
 import AuthPage from './components/AuthPage';
 import AppLayout from './components/app/AppLayout';
 import Dashboard from './components/app/Dashboard';
@@ -49,6 +55,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/rent-cars" element={<Rent />} />
             <Route path="/app" element={<AppLayout />}>
               <Route index element={<Navigate to="/app/dashboard" replace />} />
               <Route path="dashboard" element={<Dashboard />} />
@@ -64,7 +71,15 @@ function App() {
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="/cookie-policy" element={<CookiePolicy />} />
-            <Route path="/rent" element={<Rent />} />
+            <Route path="/rent" element={<RentLayout />}>
+              <Route index element={<Navigate to="/rent/dashboard" replace />} />
+              <Route path="dashboard" element={<RentDashboard />} />
+              <Route path="my-rentals" element={<RentMyRentals />} />
+              <Route path="payments" element={<RentPayments />} />
+              <Route path="history" element={<RentHistory />} />
+              <Route path="favorites" element={<RentFavorites />} />
+              <Route path="support" element={<Support />} />
+            </Route>
           </Routes>
         </main>
       </CartProvider>
