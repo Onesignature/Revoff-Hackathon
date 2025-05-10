@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Bell, Settings, Car, Store, Wallet, LineChart, Home, ShoppingCart, HeadphonesIcon, Brain } from 'lucide-react';
+import { Bell, Settings, Car, Store, Wallet, LineChart, Home, ShoppingCart, HeadphonesIcon, Brain, Key } from 'lucide-react';
 
 const AppHeader: React.FC = () => {
   const navItems = [
