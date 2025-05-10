@@ -19,36 +19,69 @@ interface RentalCar {
 const rentalCars: RentalCar[] = [
   {
     id: 1,
-    name: "Porsche 911 GT3 RS",
-    image: "https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg",
-    price: 1500,
+    name: "Mercedes-AMG GT",
+    image: "/mercedes/amg-gt.jpg",
+    price: 1800,
     location: "Dubai Marina",
     rating: 4.9,
     reviews: 124,
-    features: ["500+ HP", "PDK Transmission", "Track Ready"],
+    features: ["585 HP", "Twin-Turbo V8", "Sport Plus Mode"],
     available: true
   },
   {
     id: 2,
-    name: "Lamborghini Urus",
-    image: "https://images.pexels.com/photos/3786091/pexels-photo-3786091.jpeg",
-    price: 2000,
+    name: "Mercedes-Benz S-Class",
+    image: "/mercedes/sclass.jpg",
+    price: 1500,
     location: "Downtown Dubai",
     rating: 4.8,
     reviews: 98,
-    features: ["650 HP", "SUV", "All-Wheel Drive"],
+    features: ["Luxury Interior", "MBUX System", "4MATIC All-Wheel Drive"],
     available: true
   },
   {
     id: 3,
-    name: "Ferrari SF90",
-    image: "https://images.pexels.com/photos/3752169/pexels-photo-3752169.jpeg",
+    name: "Mercedes-AMG G63",
+    image: "/mercedes/g63.webp",
     price: 2500,
     location: "Palm Jumeirah",
     rating: 5.0,
     reviews: 76,
-    features: ["Hybrid", "1000 HP", "All-Wheel Drive"],
+    features: ["577 HP", "SUV", "Off-Road Capable"],
+    available: true
+  },
+  {
+    id: 4,
+    name: "Mercedes-Benz EQS",
+    image: "/mercedes/eqs.avif",
+    price: 2200,
+    location: "Jumeirah Beach Residence",
+    rating: 4.7,
+    reviews: 62,
+    features: ["Electric", "450+ Mile Range", "Hyperscreen"],
     available: false
+  },
+  {
+    id: 5,
+    name: "Mercedes-AMG E63",
+    image: "/mercedes/e63.jpg",
+    price: 1900,
+    location: "Dubai International Financial Centre",
+    rating: 4.9,
+    reviews: 87,
+    features: ["603 HP", "BiTurbo V8", "Drift Mode"],
+    available: true
+  },
+  {
+    id: 6,
+    name: "Mercedes-Maybach GLS 600",
+    image: "/mercedes/maybach.avif",
+    price: 3000,
+    location: "City Walk Dubai",
+    rating: 5.0,
+    reviews: 45,
+    features: ["Ultra Luxury", "Reclining Rear Seats", "Burmester Sound System"],
+    available: true
   }
 ];
 
