@@ -10,6 +10,7 @@ import ProductsSection from './components/ProductsSection';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
 import CookiePolicy from './components/CookiePolicy';
+import Rent from './components/Rent';
 import AuthPage from './components/AuthPage';
 import AppLayout from './components/app/AppLayout';
 import Dashboard from './components/app/Dashboard';
@@ -63,6 +64,7 @@ function App() {
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="/cookie-policy" element={<CookiePolicy />} />
+            <Route path="/rent" element={<Rent />} />
           </Routes>
         </main>
       </CartProvider>

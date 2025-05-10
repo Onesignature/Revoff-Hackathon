@@ -19,9 +19,8 @@ const Navbar: React.FC = () => {
                 Vehicles <ChevronDown className="ml-1 h-4 w-4" />
               </a>
               <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                <a href="#investment-options" className="block px-4 py-2 text-gray-800 hover:bg-red-50">Luxury Cars</a>
-                <a href="#investment-options" className="block px-4 py-2 text-gray-800 hover:bg-red-50">Premium SUVs</a>
-                <a href="#investment-options" className="block px-4 py-2 text-gray-800 hover:bg-red-50">Exotic Cars</a>
+                <a href="#investment-options" className="block px-4 py-2 text-gray-800 hover:bg-red-50">Buy Cars</a>
+                <a href="/rent" className="block px-4 py-2 text-gray-800 hover:bg-red-50">Rent Cars</a>
               </div>
             </div>
             
