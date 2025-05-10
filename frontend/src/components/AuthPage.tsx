@@ -6,13 +6,14 @@ import Logo from './Logo';
 const AuthPage: React.FC = () => {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
+  const [userType, setUserType] = useState<'invest' | 'rent'>('invest');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate successful login
-    navigate('/app');
+    // Route based on user type selection
+    navigate(userType === 'invest' ? '/app' : '/rent');
   };
 
   return (
@@ -65,6 +66,37 @@ const AuthPage: React.FC = () => {
                 />
               </div>
             </div>
+          </div>
+          
+          <div className="space-y-2">
+            <div className="flex items-center gap-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="userType"
+                  checked={userType === 'invest'}
+                  onChange={() => setUserType('invest')}
+                  className="w-4 h-4 text-red-600 focus:ring-red-500 border-gray-300"
+                />
+                <span>I want to invest in cars</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="userType"
+                  checked={userType === 'rent'}
+                  onChange={() => setUserType('rent')}
+                  className="w-4 h-4 text-red-600 focus:ring-red-500 border-gray-300"
+                />
+                <span>I want to rent cars</span>
+              </label>
+            </div>
+            <p className="text-sm text-gray-500">
+              {userType === 'invest' 
+                ? 'Invest in luxury vehicles and earn passive income'
+                : 'Rent premium vehicles for your luxury driving experience'
+              }
+            </p>
           </div>
 
           <div>
