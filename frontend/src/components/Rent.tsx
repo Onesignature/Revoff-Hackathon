@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Calendar, MapPin, Filter, Search, Star, Shield, Clock, Car } from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
@@ -52,9 +53,14 @@ const rentalCars: RentalCar[] = [
 ];
 
 const Rent: React.FC = () => {
+  const navigate = useNavigate();
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [location, setLocation] = useState('');
+
+  const handleRentNow = () => {
+    navigate('/auth');
+  };
 
   return (
     <div className="min-h-screen bg-gray-900">
@@ -215,6 +221,7 @@ const Rent: React.FC = () => {
                       : 'bg-gray-400 cursor-not-allowed'
                   }`}
                   disabled={!car.available}
+                  onClick={car.available ? handleRentNow : undefined}
                 >
                   {car.available ? 'Rent Now' : 'Not Available'}
                 </button>

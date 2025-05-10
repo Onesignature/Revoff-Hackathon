@@ -10,6 +10,7 @@ import ProductsSection from './components/ProductsSection';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
 import CookiePolicy from './components/CookiePolicy';
+import Rent from './components/Rent';
 import RentLayout from './components/rent/RentLayout';
 import RentDashboard from './components/rent/RentDashboard';
 import RentMyRentals from './components/rent/RentMyRentals';
@@ -54,6 +55,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/rent-cars" element={<Rent />} />
             <Route path="/app" element={<AppLayout />}>
               <Route index element={<Navigate to="/app/dashboard" replace />} />
               <Route path="dashboard" element={<Dashboard />} />

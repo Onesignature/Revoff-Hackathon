@@ -20,7 +20,7 @@ const Navbar: React.FC = () => {
               </a>
               <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                 <a href="#investment-options" className="block px-4 py-2 text-gray-800 hover:bg-red-50">Buy Cars</a>
-                <a href="/rent" className="block px-4 py-2 text-gray-800 hover:bg-red-50">Rent Cars</a>
+                <a href="/rent-cars" className="block px-4 py-2 text-gray-800 hover:bg-red-50">Rent Cars</a>
               </div>
             </div>
             
@@ -64,7 +64,10 @@ const Navbar: React.FC = () => {
           <div className="px-6 space-y-6">
             <a href="#home" className="block text-white/80 hover:text-red-500 py-2 text-lg font-medium transition-colors">Overview</a>
             <a href="#how-it-works" className="block text-white/80 hover:text-red-500 py-2 text-lg font-medium transition-colors">Features</a>
-            <a href="#investment-options" className="block text-white/80 hover:text-red-500 py-2 text-lg font-medium transition-colors">Vehicles</a>
+            <div className="space-y-2">
+              <a href="#investment-options" className="block text-white/80 hover:text-red-500 py-2 text-lg font-medium transition-colors">Buy Cars</a>
+              <a href="/rent-cars" className="block text-white/80 hover:text-red-500 py-2 text-lg font-medium transition-colors">Rent Cars</a>
+            </div>
             <a href="#about" className="block text-white/80 hover:text-red-500 py-2 text-lg font-medium transition-colors">About Us</a>
             <div className="pt-6 flex flex-col gap-4 border-t border-white/10">
               <a href="/auth" className="w-full text-white/90 hover:text-red-500 py-3 text-left text-lg font-medium transition-colors">Login</a>
