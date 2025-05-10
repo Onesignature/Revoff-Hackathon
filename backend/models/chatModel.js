@@ -34,7 +34,7 @@ const chatSessions = new Map();
  * @param {string} systemMessage - Optional system message to set context
  * @returns {ChatSession} The created chat session
  */
-const createChatSession = (userId, model = "meta-llama/Meta-Llama-3-8B-Instruct-Turbo", systemMessage = "") => {
+const createChatSession = (userId, model = "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8", systemMessage = "") => {
   const session = {
     userId,
     messages: [],

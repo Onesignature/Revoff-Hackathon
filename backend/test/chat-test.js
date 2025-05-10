@@ -80,17 +80,11 @@ async function testStreamingChat() {
         }),
       });
 
-      // Process the stream
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        
-        const chunk = decoder.decode(value);
+      // Process the stream with node-fetch v2
+      // Get the response as a text stream      response.body.on('data', (chunk) => {
         // Process the SSE chunk
-        const lines = chunk.split('\n\n');
+        const chunkStr = chunk.toString();
+        const lines = chunkStr.split('\n\n');
         for (const line of lines) {
           if (line.startsWith('data: ')) {
             try {
@@ -107,9 +101,10 @@ async function testStreamingChat() {
             }
           }
         }
-      }
+      });
       
-      console.log('\n\nDo you want to see the chat history? (y/n):');
+      response.body.on('end', () => {
+        console.log('\n\nDo you want to see the chat history? (y/n):');
       rl.question('', async (answer) => {
         if (answer.toLowerCase() === 'y') {
           await testGetHistory();

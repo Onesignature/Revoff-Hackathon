@@ -30,7 +30,7 @@ const sendChatMessage = async (req, res) => {
     if (!session) {
       session = chatModel.createChatSession(
         userId, 
-        model || "meta-llama/Meta-Llama-3-8B-Instruct-Turbo", 
+        model || "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8", 
         systemMessage || ""
       );
     }
@@ -80,7 +80,7 @@ const streamChatMessage = async (req, res) => {
     if (!session) {
       session = chatModel.createChatSession(
         userId,
-        model || "meta-llama/Meta-Llama-3-8B-Instruct-Turbo",
+        model || "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
         systemMessage || ""
       );
     }
