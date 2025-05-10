@@ -29,16 +29,16 @@ interface Car {
 const cars: Car[] = [
   {
     id: 1,
-    name: "Porsche 911",
-    model: "GT3 RS (992)",
+    name: "Mercedes-AMG",
+    model: "GT Coupe",
     price: 759000,
     location: "Dubai",
-    image: "https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg",
+    image: "/mercedes/cle.jpg",
     status: "Available",
     specs: {
-      engine: "4.0L Flat-6",
+      engine: "4.0L V8 Twin-Turbo",
       mileage: "1,200 km",
-      transmission: "PDK"
+      transmission: "AMG SPEEDSHIFT"
     },
     returns: {
       totalReturn: 48.88,
@@ -50,16 +50,16 @@ const cars: Car[] = [
   },
   {
     id: 2,
-    name: "Lamborghini Urus",
-    model: "Performante",
+    name: "Mercedes-AMG",
+    model: "G63",
     price: 1273000,
     location: "Dubai",
-    image: "https://images.pexels.com/photos/3786091/pexels-photo-3786091.jpeg",
+    image: "/mercedes/g63.webp",
     status: "Available",
     specs: {
-      engine: "4.0L V8 Twin-Turbo",
+      engine: "4.0L V8 BiTurbo",
       mileage: "500 km",
-      transmission: "8-Speed Auto"
+      transmission: "9G-TRONIC"
     },
     returns: {
       totalReturn: 52.15,
@@ -72,16 +72,16 @@ const cars: Car[] = [
   },
   {
     id: 3,
-    name: "Ferrari SF90",
-    model: "Stradale",
+    name: "Mercedes-Maybach",
+    model: "GLS 600",
     price: 2199000,
     location: "Dubai",
-    image: "https://images.pexels.com/photos/3752169/pexels-photo-3752169.jpeg",
+    image: "/mercedes/maybach.avif",
     status: "Available",
     specs: {
-      engine: "4.0L V8 Hybrid",
+      engine: "4.0L V8 BiTurbo",
       mileage: "350 km",
-      transmission: "8-Speed DCT"
+      transmission: "9G-TRONIC"
     },
     returns: {
       totalReturn: 49.73,
@@ -90,6 +90,69 @@ const cars: Car[] = [
     },
     fundingProgress: 34,
     isBalanced: true
+  },
+  {
+    id: 4,
+    name: "Mercedes-AMG",
+    model: "C63",
+    price: 689000,
+    location: "Dubai",
+    image: "/mercedes/s600.jpg",
+    status: "Available",
+    specs: {
+      engine: "4.0L V8 BiTurbo",
+      mileage: "1,100 km",
+      transmission: "AMG SPEEDSHIFT"
+    },
+    returns: {
+      totalReturn: 45.50,
+      yearlyReturn: 9.10,
+      projectedYield: 4.95
+    },
+    fundingProgress: 78,
+    isHighYield: true
+  },
+  {
+    id: 5,
+    name: "Mercedes-Benz",
+    model: "S-Class",
+    price: 898000,
+    location: "Dubai",
+    image: "/mercedes/romeo.jpg",
+    status: "Funded",
+    specs: {
+      engine: "3.0L I6 Turbo",
+      mileage: "800 km",
+      transmission: "9G-TRONIC"
+    },
+    returns: {
+      totalReturn: 47.20,
+      yearlyReturn: 9.44,
+      projectedYield: 5.25
+    },
+    fundingProgress: 100,
+    isBalanced: true
+  },
+  {
+    id: 6,
+    name: "Mercedes-Benz",
+    model: "EQS",
+    price: 949000,
+    location: "Dubai",
+    image: "/mercedes/eqs.avif",
+    status: "Exited",
+    specs: {
+      engine: "Electric Dual-Motor",
+      mileage: "650 km",
+      transmission: "Single-Speed"
+    },
+    returns: {
+      totalReturn: 54.30,
+      yearlyReturn: 10.86,
+      projectedYield: 6.10
+    },
+    fundingProgress: 100,
+    isHighYield: true
   }
 ];
 
