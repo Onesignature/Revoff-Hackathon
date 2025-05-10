@@ -94,8 +94,7 @@ const analyzePortfolio = async (req, res) => {
     } else if (analysisType === 'opportunity') {
       schema = {
         type: "object",
-        properties: {
-          topOpportunities: {
+        properties: {          topOpportunities: {
             type: "array",
             description: "List of top investment opportunities",
             items: {
@@ -105,7 +104,8 @@ const analyzePortfolio = async (req, res) => {
                 expectedROI: { type: "number" },
                 annualYield: { type: "number" },
                 riskLevel: { type: "string" },
-                rationale: { type: "string" }
+                rationale: { type: "string" },
+                imageUrl: { type: "string" }
               }
             }
           },
@@ -292,10 +292,52 @@ const analyzePortfolio = async (req, res) => {
         type: "json_object",
         schema: schema
       }
-    });
-
-    // Parse the JSON response
+    });    // Parse the JSON response
     const analysisResult = JSON.parse(response.choices[0].message.content);
+    
+    // Enrich opportunity analysis with vehicle data (including imageUrl)
+    if (analysisType === 'opportunity' || analysisType === 'comprehensive') {
+      // For opportunity analysis, enrich with vehicle data
+      const vehicleData = wealthModel.getAllVehicles();
+      
+      // Enrich topOpportunities with imageUrl if available
+      if (analysisResult.topOpportunities) {
+        analysisResult.topOpportunities = analysisResult.topOpportunities.map(opportunity => {
+          // Try to find matching vehicle in our data
+          const matchingVehicle = vehicleData.find(v => 
+            v.name.toLowerCase().includes(opportunity.vehicle.toLowerCase()) || 
+            opportunity.vehicle.toLowerCase().includes(v.name.toLowerCase())
+          );
+          
+          if (matchingVehicle) {
+            // Add imageUrl from our data
+            return {
+              ...opportunity,
+              imageUrl: matchingVehicle.imageUrl || null
+            };
+          }
+          return opportunity;
+        });
+      }
+      
+      // Also enrich recommendedInvestments for comprehensive analysis
+      if (analysisResult.recommendedInvestments) {
+        analysisResult.recommendedInvestments = analysisResult.recommendedInvestments.map(investment => {
+          const matchingVehicle = vehicleData.find(v => 
+            v.name.toLowerCase().includes(investment.vehicle.toLowerCase()) || 
+            investment.vehicle.toLowerCase().includes(v.name.toLowerCase())
+          );
+          
+          if (matchingVehicle) {
+            return {
+              ...investment,
+              imageUrl: matchingVehicle.imageUrl || null
+            };
+          }
+          return investment;
+        });
+      }
+    }
 
     // Store the analysis result in the user's portfolio
     const portfolio = wealthModel.getOrCreateUserPortfolio(userId);
