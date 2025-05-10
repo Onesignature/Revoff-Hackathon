@@ -1,0 +1,669 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import { Brain, TrendingUp, LineChart, AlertTriangle, ArrowUpRight, Car, Zap, Send, ChevronRight, RefreshCw } from 'lucide-react';
+
+// Interface definitions for API responses
+interface RiskFactor {
+  factor: string;
+  impact: string;
+  mitigationStrategy: string;
+}
+
+interface MarketRisk {
+  volatility: {
+    level: string;
+    percentage: number;
+  };
+  liquidity: {
+    level: string;
+    percentage: number;
+  };
+}
+
+interface RiskAnalysis {
+  overallRiskLevel: string;
+  riskFactors: RiskFactor[];
+  marketRisks: MarketRisk;
+  recommendations: string[];
+}
+
+interface RecommendedInvestment {
+  vehicle: string;
+  expectedROI: number;
+  annualYield: number;
+  riskLevel: string;
+  rationale: string;
+}
+
+interface EmergingTrend {
+  trend: string;
+  impact: string;
+  confidenceLevel: number;
+}
+
+interface OpportunityAnalysis {
+  topOpportunities: RecommendedInvestment[];
+  emergingTrends: EmergingTrend[];
+  recommendedActions: string[];
+}
+
+interface MessageData {
+  role: 'assistant' | 'user';
+  content: string;
+  timestamp: Date;
+}
+
+const AIWealthManager: React.FC = () => {
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState<MessageData[]>([
+    {
+      role: 'assistant',
+      content: 'Hello! I can help you make informed investment decisions. What would you like to know?',
+      timestamp: new Date()
+    }
+  ]);
+  const [selectedTimeframe, setSelectedTimeframe] = useState('1M');
+  const [isLoading, setIsLoading] = useState(false);
+  const [riskAnalysis, setRiskAnalysis] = useState<RiskAnalysis | null>(null);
+  const [opportunityAnalysis, setOpportunityAnalysis] = useState<OpportunityAnalysis | null>(null);
+  const [activeAnalysisTab, setActiveAnalysisTab] = useState<'risk' | 'opportunity'>('risk');
+  const timeframes = ['1W', '1M', '3M', '6M', '1Y', 'ALL'];
+  
+  // Mock user ID - in a real app, this would come from authentication
+  const userId = 'user123';
+
+  // Fetch risk analysis from backend
+  const fetchRiskAnalysis = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch('/api/wealth/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          analysisType: 'risk'
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch risk analysis');
+      }
+
+      const data = await response.json();
+      setRiskAnalysis(data.result);
+    } catch (error) {
+      console.error('Error fetching risk analysis:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [userId]);
+
+  // Fetch opportunity analysis from backend
+  const fetchOpportunityAnalysis = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch('/api/wealth/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          analysisType: 'opportunity'
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch opportunity analysis');
+      }
+
+      const data = await response.json();
+      setOpportunityAnalysis(data.result);
+    } catch (error) {
+      console.error('Error fetching opportunity analysis:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [userId]);
+
+  // Handle AI assistant messaging
+  const handleSendMessage = async () => {
+    if (!message.trim()) return;
+
+    // Add user message to chat
+    const userMessage = {
+      role: 'user' as const,
+      content: message,
+      timestamp: new Date()
+    };
+    setMessages(prev => [...prev, userMessage]);
+    setMessage('');
+
+    try {
+      // Call backend chat API
+      const response = await fetch('/api/chat/message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          message: userMessage.content,
+          systemMessage: 'You are an AI investment advisor for luxury vehicle investments. Provide clear, concise financial advice.'
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get AI response');
+      }
+
+      const data = await response.json();
+      
+      // Add AI response to chat
+      setMessages(prev => [
+        ...prev, 
+        {
+          role: 'assistant',
+          content: data.message,
+          timestamp: new Date()
+        }
+      ]);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      // Add error message
+      setMessages(prev => [
+        ...prev, 
+        {
+          role: 'assistant',
+          content: 'Sorry, I encountered an error processing your request. Please try again later.',
+          timestamp: new Date()
+        }
+      ]);
+    }
+  };
+
+  // Load initial data on component mount
+  useEffect(() => {
+    fetchRiskAnalysis();
+    fetchOpportunityAnalysis();
+  }, [fetchRiskAnalysis, fetchOpportunityAnalysis]);
+
+  // Render color based on risk level
+  const getRiskLevelColor = (level: string) => {
+    switch(level.toLowerCase()) {
+      case 'low': return 'text-emerald-600';
+      case 'medium': return 'text-amber-600';
+      case 'high': return 'text-red-600';
+      default: return 'text-gray-600';
+    }
+  };
+
+  // Render risk level bar width
+  const getRiskLevelWidth = (level: string) => {
+    switch(level.toLowerCase()) {
+      case 'low': return '25%';
+      case 'medium': return '50%';
+      case 'high': return '75%';
+      case 'very high': return '90%';
+      default: return '50%';
+    }
+  };
+
+  // Render risk level bar color
+  const getRiskLevelBarColor = (level: string) => {
+    switch(level.toLowerCase()) {
+      case 'low': return 'bg-emerald-500';
+      case 'medium': return 'bg-amber-500';
+      case 'high': return 'bg-red-500';
+      case 'very high': return 'bg-red-600';
+      default: return 'bg-gray-500';
+    }
+  };
+
+  return (
+    <div className="space-y-6 max-w-[1600px] mx-auto pb-8">
+      <h1 className="text-2xl font-bold text-gray-900">AI Wealth Manager</h1>
+
+      {/* Market Overview Card */}
+      <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl p-8 text-white">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <h2 className="text-2xl font-bold mb-4">Market Overview</h2>
+            <p className="text-gray-300 mb-6">
+              AI-powered analysis shows strong market conditions with high potential for luxury vehicle investments.
+            </p>
+            <div className="flex gap-3">
+              {timeframes.map((tf) => (
+                <button
+                  key={tf}
+                  onClick={() => setSelectedTimeframe(tf)}
+                  className={`px-3 py-1 rounded-full text-sm transition-colors ${
+                    selectedTimeframe === tf
+                      ? 'bg-red-600 text-white'
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  }`}
+                >
+                  {tf}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="relative h-32">
+            <img 
+              src="https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg" 
+              alt="Market Trend" 
+              className="absolute top-0 right-0 w-48 h-32 object-cover rounded-xl opacity-50"
+            />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center">
+                <div className="text-4xl font-bold mb-2">+15.8%</div>
+                <div className="text-gray-300">Market Growth</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Market Intelligence */}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="bg-white rounded-xl p-4 md:p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                <Brain className="w-6 h-6 text-red-600" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold">Market Intelligence</h2>
+                <p className="text-gray-600">Real-time market analysis and predictions</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div className="relative">
+                  <img 
+                    src="https://images.pexels.com/photos/3786091/pexels-photo-3786091.jpeg" 
+                    alt="Market Analysis" 
+                    className="w-full h-40 object-cover rounded-xl"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-xl"></div>
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <div className="text-sm">Market Sentiment</div>
+                    <div className="text-2xl font-bold">Strongly Bullish</div>
+                  </div>
+                </div>
+                <div className="bg-emerald-50 rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-emerald-700">Confidence Score</span>
+                    <span className="text-emerald-700 font-bold">92%</span>
+                  </div>
+                  <div className="h-2 bg-emerald-100 rounded-full">
+                    <div className="h-full bg-emerald-500 rounded-full" style={{ width: '92%' }} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <div className="text-gray-600">Volume</div>
+                    <div className="font-medium">↑ 12.5%</div>
+                  </div>
+                  <div>
+                    <div className="text-gray-600">Volatility</div>
+                    <div className="font-medium">Low</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gray-50 rounded-xl p-4">
+                <h3 className="font-medium mb-3">Key Insights</h3>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center gap-2">
+                    <ArrowUpRight className="w-4 h-4 text-emerald-600" />
+                    <span>Luxury SUV market showing strong growth</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <ArrowUpRight className="w-4 h-4 text-emerald-600" />
+                    <span>Electric vehicle segment expanding</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <ArrowUpRight className="w-4 h-4 text-emerald-600" />
+                    <span>Premium sports car demand increasing</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          {/* AI Insights */}
+          <div className="bg-gradient-to-br from-red-600 to-red-700 rounded-xl p-4 md:p-6 text-white">
+            <div className="flex items-center gap-3 mb-6">
+              <Brain className="w-8 h-8" />
+              <h3 className="text-xl font-bold">AI Market Insights</h3>
+            </div>
+            <div className="space-y-4">
+              <div className="bg-white/10 rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <TrendingUp className="w-5 h-5" />
+                  <span className="font-medium">Emerging Trends</span>
+                </div>
+                <p className="text-sm text-gray-100">
+                  Electric vehicle market shows 32% growth potential in luxury segment
+                </p>
+              </div>
+              <div className="bg-white/10 rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <AlertTriangle className="w-5 h-5" />
+                  <span className="font-medium">Risk Alert</span>
+                </div>
+                <p className="text-sm text-gray-100">
+                  Consider diversifying portfolio across different vehicle categories
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Investment Recommendations */}
+          <div className="bg-white rounded-xl p-4 md:p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold">Recommended Investments</h2>
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => setActiveAnalysisTab('risk')}
+                  className={`px-3 py-1 rounded-lg text-sm transition-colors ${
+                    activeAnalysisTab === 'risk'
+                      ? 'bg-red-600 text-white'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  Risk
+                </button>
+                <button 
+                  onClick={() => setActiveAnalysisTab('opportunity')}
+                  className={`px-3 py-1 rounded-lg text-sm transition-colors ${
+                    activeAnalysisTab === 'opportunity'
+                      ? 'bg-red-600 text-white'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  Opportunity
+                </button>
+                <button 
+                  onClick={() => {
+                    if (activeAnalysisTab === 'risk') {
+                      fetchRiskAnalysis();
+                    } else {
+                      fetchOpportunityAnalysis();
+                    }
+                  }}
+                  className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+                  disabled={isLoading}
+                >
+                  <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                </button>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              {activeAnalysisTab === 'opportunity' && opportunityAnalysis ? (
+                opportunityAnalysis.topOpportunities.slice(0, 2).map((opportunity, index) => (
+                  <div key={index} className="flex flex-col md:flex-row items-start md:items-center gap-4 p-4 bg-gray-50 rounded-xl">
+                    <img 
+                      src={`https://images.pexels.com/photos/378${2510 + index}/pexels-photo-378${2510 + index}.jpeg`}
+                      alt={opportunity.vehicle} 
+                      className="w-full md:w-24 h-24 md:h-24 object-cover rounded-lg flex-shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-medium">{opportunity.vehicle}</h3>
+                      <div className="text-sm text-gray-600">
+                        {opportunity.riskLevel} risk · {opportunity.rationale.substring(0, 60)}...
+                      </div>
+                      <div className="flex flex-wrap items-center gap-4 mt-2">
+                        <span className="text-sm text-emerald-600">↑ {opportunity.expectedROI}% Expected ROI</span>
+                        <span className="text-sm text-gray-600">{opportunity.annualYield}% Annual Yield</span>
+                      </div>
+                    </div>
+                    <button className="w-full md:w-auto px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                      View Details
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <>
+                  <div className="flex flex-col md:flex-row items-start md:items-center gap-4 p-4 bg-gray-50 rounded-xl">
+                    <img 
+                      src="https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg" 
+                      alt="Porsche 911" 
+                      className="w-full md:w-24 h-24 md:h-24 object-cover rounded-lg flex-shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-medium">Porsche 911 GT3 RS</h3>
+                      <div className="text-sm text-gray-600">High appreciation potential · Low risk</div>
+                      <div className="flex flex-wrap items-center gap-4 mt-2">
+                        <span className="text-sm text-emerald-600">↑ 15.2% Expected ROI</span>
+                        <span className="text-sm text-gray-600">8.5% Annual Yield</span>
+                      </div>
+                    </div>
+                    <button className="w-full md:w-auto px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                      View Details
+                    </button>
+                  </div>
+
+                  <div className="flex flex-col md:flex-row items-start md:items-center gap-4 p-4 bg-gray-50 rounded-xl">
+                    <img 
+                      src="https://images.pexels.com/photos/3786091/pexels-photo-3786091.jpeg" 
+                      alt="Tesla Model S" 
+                      className="w-full md:w-24 h-24 md:h-24 object-cover rounded-lg flex-shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-medium">Tesla Model S Plaid</h3>
+                      <div className="text-sm text-gray-600">Emerging market · Medium risk</div>
+                      <div className="flex flex-wrap items-center gap-4 mt-2">
+                        <span className="text-sm text-emerald-600">↑ 18.7% Expected ROI</span>
+                        <span className="text-sm text-gray-600">9.2% Annual Yield</span>
+                      </div>
+                    </div>
+                    <button className="w-full md:w-auto px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                      View Details
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* AI Assistant and Analytics */}
+        <div className="space-y-6">
+          <div className="bg-white rounded-xl p-4 md:p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                <Brain className="w-5 h-5 text-red-600" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold">AI Investment Advisor</h2>
+                <p className="text-sm text-gray-600">Get personalized advice</p>
+              </div>
+            </div>
+
+            <div className="h-[300px] border border-gray-100 rounded-xl mb-4 p-4 overflow-y-auto">
+              <div className="space-y-4">
+                {messages.map((msg, index) => (
+                  <div key={index} className="flex gap-3">
+                    {msg.role === 'assistant' ? (
+                      <>
+                        <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                          <Brain className="w-4 h-4 text-red-600" />
+                        </div>
+                        <div className="bg-gray-100 rounded-2xl rounded-tl-none p-4 max-w-[80%]">
+                          <p>{msg.content}</p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="ml-auto order-last">
+                          <div className="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
+                            <div className="text-white text-xs font-bold">U</div>
+                          </div>
+                        </div>
+                        <div className="bg-red-600 text-white rounded-2xl rounded-tr-none p-4 max-w-[80%] ml-auto">
+                          <p>{msg.content}</p>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <input
+                type="text"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
+                }}
+                placeholder="Ask about market trends, risks, or opportunities..."
+                className="flex-1 border border-gray-200 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+              />
+              <button 
+                onClick={handleSendMessage}
+                className="bg-red-600 text-white px-4 py-2 rounded-xl hover:bg-red-700 transition-colors"
+              >
+                <Send className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Performance Metrics */}
+          <div className="bg-white rounded-xl p-4 md:p-6">
+            <h3 className="text-lg font-bold mb-4">Performance Metrics</h3>
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                <img 
+                  src="https://images.pexels.com/photos/3752169/pexels-photo-3752169.jpeg" 
+                  alt="Performance" 
+                  className="w-full sm:w-20 h-20 object-cover rounded-xl"
+                />
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5 text-emerald-600" />
+                    <div className="text-xl font-bold text-emerald-600">+15.8%</div>
+                  </div>
+                  <div className="text-sm text-gray-600">Annual Growth</div>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <div className="text-sm text-gray-600">ROI</div>
+                  <div className="text-lg font-bold">18.3%</div>
+                </div>
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <div className="text-sm text-gray-600">Yield</div>
+                  <div className="text-lg font-bold">9.2%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Risk Analysis */}
+          <div className="bg-white rounded-xl p-4 md:p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold">Risk Analysis</h3>
+              <button 
+                onClick={fetchRiskAnalysis}
+                className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+                disabled={isLoading}
+              >
+                <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+              </button>
+            </div>
+            <div className="space-y-4">
+              {riskAnalysis ? (
+                <>
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Market Risk</span>
+                      <span className={getRiskLevelColor(riskAnalysis.marketRisks.volatility.level)}>
+                        {riskAnalysis.marketRisks.volatility.level}
+                      </span>
+                    </div>
+                    <div className="h-2 bg-gray-100 rounded-full">
+                      <div 
+                        className={`h-full ${getRiskLevelBarColor(riskAnalysis.marketRisks.volatility.level)} rounded-full`} 
+                        style={{ width: `${riskAnalysis.marketRisks.volatility.percentage}%` }} 
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Volatility</span>
+                      <span className={getRiskLevelColor(riskAnalysis.marketRisks.volatility.level)}>
+                        {riskAnalysis.marketRisks.volatility.level}
+                      </span>
+                    </div>
+                    <div className="h-2 bg-gray-100 rounded-full">
+                      <div 
+                        className={`h-full ${getRiskLevelBarColor(riskAnalysis.marketRisks.volatility.level)} rounded-full`} 
+                        style={{ width: `${riskAnalysis.marketRisks.volatility.percentage}%` }} 
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Liquidity Risk</span>
+                      <span className={getRiskLevelColor(riskAnalysis.marketRisks.liquidity.level)}>
+                        {riskAnalysis.marketRisks.liquidity.level}
+                      </span>
+                    </div>
+                    <div className="h-2 bg-gray-100 rounded-full">
+                      <div 
+                        className={`h-full ${getRiskLevelBarColor(riskAnalysis.marketRisks.liquidity.level)} rounded-full`} 
+                        style={{ width: `${riskAnalysis.marketRisks.liquidity.percentage}%` }} 
+                      />
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Market Risk</span>
+                      <span className="text-amber-600">Medium</span>
+                    </div>
+                    <div className="h-2 bg-gray-100 rounded-full">
+                      <div className="h-full bg-amber-500 rounded-full" style={{ width: '50%' }} />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Volatility</span>
+                      <span className="text-emerald-600">Low</span>
+                    </div>
+                    <div className="h-2 bg-gray-100 rounded-full">
+                      <div className="h-full bg-emerald-500 rounded-full" style={{ width: '25%' }} />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>Liquidity Risk</span>
+                      <span className="text-red-600">High</span>
+                    </div>
+                    <div className="h-2 bg-gray-100 rounded-full">
+                      <div className="h-full bg-red-500 rounded-full" style={{ width: '75%' }} />
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AIWealthManager;

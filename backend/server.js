@@ -9,6 +9,7 @@ const { swaggerUi, swaggerDocs } = require('./swagger');
 const serverRoutes = require('./routes/serverRoutes');
 const productRoutes = require('./routes/productRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const wealthRoutes = require('./routes/wealthRoutes');
 
 // Load environment variables from .env file in root directory
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
@@ -38,6 +39,7 @@ app.get('/', (req, res) => {
 app.use('/api/server', serverRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/wealth', wealthRoutes);
 
 // Swagger API Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs, { explorer: true }));
