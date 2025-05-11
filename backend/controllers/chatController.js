@@ -222,7 +222,7 @@ IMPORTANT INSTRUCTIONS:
 2. Return a JSON response with matched cars, including id, name, type, basePrice, imageUrl, and description.
 3. Include a reasoning field explaining why these cars match the user's criteria.
 4. Format your entire response as valid JSON without any additional text.
-5. Limit results to a maximum of 3 cars.
+5. Limit results to a maximum of 10 cars.
 6. The response must be in the following structure:
 {
   "matches": [

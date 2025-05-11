@@ -229,23 +229,29 @@ const Dashboard: React.FC = () => {  const [searchQuery, setSearchQuery] = useSt
                   </div>
                 </div>
               ))
-            )}
-          </div>          {carResults.length > 0 && (
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              {carResults.map((car) => (
-                <div 
-                  key={car.id} 
-                  className={`${car.id === (selectedCar?.id || carResults[0].id) ? 'bg-red-600 text-white' : 'bg-white border border-gray-100'} rounded-xl p-4 cursor-pointer transition-colors`}
-                  onClick={() => handleSelectCar(car)}
-                >                  <img 
-                    src={`/${car.imageUrl || 'mercedes/cle.jpg'}`} 
-                    alt={car.name || 'Car'} 
-                    className="w-full h-32 object-cover rounded-lg mb-3"
-                  />
-                  <h3 className="font-medium">{car.name || 'Unknown Model'}</h3>
-                  <p className="text-lg font-semibold">AED {(car.price || car.basePrice || 0).toLocaleString()}</p>
+            )}          </div>          {carResults.length > 0 && (
+            <div className="max-h-96 overflow-y-auto pr-2">
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                {carResults.map((car) => (
+                  <div 
+                    key={car.id} 
+                    className={`${car.id === (selectedCar?.id || carResults[0].id) ? 'bg-red-600 text-white' : 'bg-white border border-gray-100'} rounded-xl p-4 cursor-pointer transition-colors`}
+                    onClick={() => handleSelectCar(car)}
+                  >                  <img 
+                      src={`/${car.imageUrl || 'mercedes/cle.jpg'}`} 
+                      alt={car.name || 'Car'} 
+                      className="w-full h-32 object-cover rounded-lg mb-3"
+                    />
+                    <h3 className="font-medium">{car.name || 'Unknown Model'}</h3>
+                    <p className="text-lg font-semibold">AED {(car.price || car.basePrice || 0).toLocaleString()}</p>
+                  </div>
+                ))}
+              </div>
+              {carResults.length > 4 && (
+                <div className="text-center text-sm text-gray-500 mb-2">
+                  Scroll to see more results
                 </div>
-              ))}
+              )}
             </div>
           )}
 

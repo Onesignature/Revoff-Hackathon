@@ -28,6 +28,8 @@ Search for cars that match a user's requirements using AI.
 
 #### Response
 
+The API returns up to 10 matching cars based on the search criteria.
+
 ```json
 {
   "matches": [
