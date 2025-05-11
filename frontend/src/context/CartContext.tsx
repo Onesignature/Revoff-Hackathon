@@ -5,9 +5,10 @@ interface CartItem {
   name: string;
   image: string;
   price: number;
-  monthlyRent: number;
-  appreciation: number;
-  fundingProgress: number;
+  location?: string; // Added to store product location
+  features?: string[]; // Added to store product features
+  rating?: number; // Added to store product rating
+  reviews?: number; // Added to store product reviews
 }
 
 interface CartState {

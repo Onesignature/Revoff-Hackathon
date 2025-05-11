@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Calendar, MapPin, Filter, Search, Star, Shield, Clock, Car } from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import { useCart } from '../context/CartContext'; // Corrected import path for useCart
 
 interface RentalCar {
   id: number;
@@ -87,12 +88,26 @@ const rentalCars: RentalCar[] = [
 
 const Rent: React.FC = () => {
   const navigate = useNavigate();
+  const { dispatch } = useCart();
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [location, setLocation] = useState('');
 
-  const handleRentNow = () => {
-    navigate('/auth');
+  const handleRentNow = (car: RentalCar) => {
+    dispatch({ 
+      type: 'ADD_ITEM', 
+      payload: { 
+        id: car.id,
+        name: car.name,
+        image: car.image,
+        price: car.price,
+        location: car.location,
+        features: car.features,
+        rating: car.rating,
+        reviews: car.reviews,
+      }
+    });
+    navigate('/app/cart');
   };
 
   return (
@@ -254,7 +269,7 @@ const Rent: React.FC = () => {
                       : 'bg-gray-400 cursor-not-allowed'
                   }`}
                   disabled={!car.available}
-                  onClick={car.available ? handleRentNow : undefined}
+                  onClick={car.available ? () => handleRentNow(car) : undefined}
                 >
                   {car.available ? 'Rent Now' : 'Not Available'}
                 </button>
