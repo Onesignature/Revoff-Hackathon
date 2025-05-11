@@ -64,13 +64,15 @@ const HeroSection: React.FC = () => {
               </div>
             </div>
             
-            <div className="bg-white rounded-3xl p-6 w-full md:w-1/2 flex flex-col justify-between">
-              <div>
+            <div className="bg-white rounded-3xl p-6 w-full md:w-1/2 flex flex-col justify-between">              <div>
                 <h3 className="text-2xl font-bold text-gray-900">Fractional Ownership</h3>
                 <p className="text-gray-600 mt-2">Own shares in luxury vehicles and earn passive income through our managed rental program</p>
               </div>
               
-              <button className="mt-4 group flex items-center bg-red-600 text-white px-4 py-2 rounded-full self-start hover:bg-red-700 transition-colors">
+              <button 
+                onClick={() => window.location.href = '/app/cart'} 
+                className="mt-4 group flex items-center bg-red-600 text-white px-4 py-2 rounded-full self-start hover:bg-red-700 transition-colors"
+              >
                 <span className="mr-2">Explore More</span>
                 <div className="w-6 h-6 flex items-center justify-center rounded-full transform group-hover:translate-x-1 transition-transform">
                   <ArrowRight className="h-4 w-4" />

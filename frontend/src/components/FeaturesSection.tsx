@@ -65,11 +65,12 @@ const FeaturesSection: React.FC = () => {
                 Earn monthly returns through our managed rental program
               </p>
             </div>
-          </div>
-
-          {/* CTA Button */}
+          </div>          {/* CTA Button */}
           <div className="flex justify-end">
-            <button className="bg-red-600 text-white px-8 py-4 rounded-full hover:bg-red-700 transition-colors text-lg font-medium">
+            <button 
+              onClick={() => window.location.href = '/app/cart'} 
+              className="bg-red-600 text-white px-8 py-4 rounded-full hover:bg-red-700 transition-colors text-lg font-medium"
+            >
               START INVESTING
             </button>
           </div>

@@ -43,8 +43,10 @@ const SpecsSection: React.FC = () => {
             />
           </div>
 
-          <div className="space-y-8">
-            <button className="px-6 py-2 border-2 border-gray-900 rounded-full text-sm font-medium hover:bg-gray-900 hover:text-white transition-colors">
+          <div className="space-y-8">            <button 
+              onClick={() => window.location.href = '/app/cart'} 
+              className="px-6 py-2 border-2 border-gray-900 rounded-full text-sm font-medium hover:bg-gray-900 hover:text-white transition-colors"
+            >
               START INVESTING
             </button>
 

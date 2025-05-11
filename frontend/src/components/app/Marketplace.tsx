@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, SlidersHorizontal, Star, ArrowUpRight, Check } from 'lucide-react';
+import { Search, SlidersHorizontal, Star, ArrowUpRight, Check, X, CreditCard } from 'lucide-react';
+import { useCart } from '../../context/CartContext';
 
 interface Car {
   id: number;
@@ -158,14 +159,132 @@ const cars: Car[] = [
 
 type Status = 'Available' | 'Funded' | 'Exited';
 
-const Marketplace: React.FC = () => {
-  const [selectedStatus, setSelectedStatus] = React.useState<Status>('Available');
-  const navigate = useNavigate();
+interface InvestmentModalProps {
+  car: Car | null;
+  isOpen: boolean;
+  onClose: () => void;
+  onInvest: (amount: number) => void;
+}
 
+const InvestmentModal: React.FC<InvestmentModalProps> = ({ car, isOpen, onClose, onInvest }) => {
+  const [investmentAmount, setInvestmentAmount] = useState<number>(5000);
+  
+  if (!isOpen || !car) return null;
+  
+  const minInvestment = 500;
+  const maxInvestment = 100000;
+  
+  const handleInvest = () => {
+    onInvest(investmentAmount);
+    onClose();
+  };
+  
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-xl p-6 max-w-md w-full">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">Invest in {car.name}</h2>
+          <button
+            onClick={onClose}
+            className="p-1 rounded-full hover:bg-gray-100"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        
+        <div className="mb-4">
+          <img
+            src={car.image}
+            alt={car.name}
+            className="w-full h-48 object-cover rounded-lg mb-4"
+          />
+          <div className="flex justify-between mb-2">
+            <span className="text-gray-600">Model:</span>
+            <span className="font-medium">{car.model}</span>
+          </div>
+          <div className="flex justify-between mb-2">
+            <span className="text-gray-600">Price:</span>
+            <span className="font-medium">AED {car.price.toLocaleString()}</span>
+          </div>
+          <div className="flex justify-between mb-2">
+            <span className="text-gray-600">Expected Return (3yr):</span>
+            <span className="font-medium text-green-600">{car.returns.totalReturn}%</span>
+          </div>
+        </div>
+        
+        <div className="mb-6">
+          <label className="block text-sm text-gray-600 mb-1">Investment Amount (AED)</label>
+          <input
+            type="number"
+            value={investmentAmount}
+            onChange={(e) => setInvestmentAmount(Number(e.target.value))}
+            min={minInvestment}
+            max={maxInvestment}
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+          />
+          <div className="flex justify-between text-sm mt-1">
+            <span>Min: AED {minInvestment.toLocaleString()}</span>
+            <span>Max: AED {maxInvestment.toLocaleString()}</span>
+          </div>
+        </div>
+        
+        <button
+          onClick={handleInvest}
+          className="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2"
+        >
+          <CreditCard className="w-5 h-5" />
+          Invest Now
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const Marketplace: React.FC = () => {
+  const [selectedStatus, setSelectedStatus] = useState<Status>('Available');
+  const [selectedCar, setSelectedCar] = useState<Car | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const { dispatch } = useCart();
   const filteredCars = cars.filter(car => car.status === selectedStatus);
+  
+  const handleCarClick = (car: Car) => {
+    navigate(`/app/marketplace/${car.id}`);
+  };
+  
+  const openInvestModal = (e: React.MouseEvent, car: Car) => {
+    e.stopPropagation();
+    setSelectedCar(car);
+    setIsModalOpen(true);
+  };
+  
+  const handleInvest = (amount: number) => {
+    if (!selectedCar) return;
+    
+    // Create investment item to add to cart
+    const investmentItem = {
+      id: selectedCar.id,
+      name: `${selectedCar.name} ${selectedCar.model} - Investment`,
+      image: selectedCar.image,
+      price: amount,
+      location: selectedCar.location
+    };
+    
+    // Add to cart
+    dispatch({ type: 'ADD_ITEM', payload: investmentItem });
+    
+    // Navigate to cart page
+    navigate('/app/cart');
+  };
 
   return (
     <div className="space-y-6">
+      <InvestmentModal 
+        car={selectedCar}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onInvest={handleInvest}
+      />
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900">Marketplace</h1>
         <div className="flex gap-4">
@@ -198,14 +317,12 @@ const Marketplace: React.FC = () => {
             {status}
           </button>
         ))}
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      </div>      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredCars.map((car) => (
           <div 
             key={car.id} 
             className="bg-white rounded-xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
-            onClick={() => navigate(`/app/marketplace/${car.id}`)}
+            onClick={() => handleCarClick(car)}
           >
             <div className="relative">
               <img 
@@ -259,7 +376,7 @@ const Marketplace: React.FC = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-3 gap-4 text-center">
+              <div className="grid grid-cols-3 gap-4 text-center mb-4">
                 <div>
                   <p className="text-lg font-semibold text-gray-900">{car.returns.totalReturn}%</p>
                   <p className="text-sm text-gray-500">3 year appreciation</p>
@@ -273,6 +390,15 @@ const Marketplace: React.FC = () => {
                   <p className="text-sm text-gray-500">Monthly income</p>
                 </div>
               </div>
+              
+              {car.status === 'Available' && (
+                <button
+                  onClick={(e) => openInvestModal(e, car)}
+                  className="w-full bg-red-600 text-white py-2 rounded-full hover:bg-red-700 transition-colors"
+                >
+                  Invest Now
+                </button>
+              )}
             </div>
           </div>
         ))}

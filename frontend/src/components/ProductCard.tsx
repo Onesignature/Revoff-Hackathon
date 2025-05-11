@@ -24,11 +24,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ title, description, imageSrc,
           />
         </div>
         
-        <div className="w-full md:w-1/2 flex flex-col">
-          <h3 className="text-2xl font-bold text-gray-900 mb-3">{title}</h3>
+        <div className="w-full md:w-1/2 flex flex-col">          <h3 className="text-2xl font-bold text-gray-900 mb-3">{title}</h3>
           <p className="text-gray-600 mb-6">{description}</p>
           
-          <button className="mt-auto border-2 border-red-600 text-red-600 px-4 py-2 rounded-full self-start hover:bg-red-600 hover:text-white transition-colors duration-300 text-sm font-medium">
+          <button 
+            onClick={() => window.location.href = '/app/cart'} 
+            className="mt-auto border-2 border-red-600 text-red-600 px-4 py-2 rounded-full self-start hover:bg-red-600 hover:text-white transition-colors duration-300 text-sm font-medium"
+          >
             {buttonText}
           </button>
         </div>

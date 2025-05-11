@@ -29,10 +29,11 @@ const TechSpecsSection: React.FC = () => {
               className="w-full h-[400px] object-cover rounded-2xl"
             />
           </div>
-        </div>
-
-        <div className="mt-20">
-          <button className="px-6 py-2 border-2 border-gray-900 rounded-full text-sm font-medium hover:bg-gray-900 hover:text-white transition-colors">
+        </div>        <div className="mt-20">
+          <button 
+            onClick={() => window.location.href = '/app/cart'} 
+            className="px-6 py-2 border-2 border-gray-900 rounded-full text-sm font-medium hover:bg-gray-900 hover:text-white transition-colors"
+          >
             RENTAL PROGRAM
           </button>
 

@@ -24,10 +24,12 @@ const Footer: React.FC = () => {
                 <input 
                   type="email" 
                   placeholder="Enter Email to Start Investing" 
-                  className="w-full pl-12 pr-4 py-3 rounded-full bg-white text-gray-900"
-                />
+                  className="w-full pl-12 pr-4 py-3 rounded-full bg-white text-gray-900"                />
               </div>
-              <button className="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-full flex items-center justify-center gap-2 transition-colors">
+              <button 
+                onClick={() => window.location.href = '/app/cart'} 
+                className="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-full flex items-center justify-center gap-2 transition-colors"
+              >
                 <span>Start Investing</span>
                 <ArrowRight className="w-5 h-5" />
               </button>

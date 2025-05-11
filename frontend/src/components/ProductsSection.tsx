@@ -101,8 +101,7 @@ const ProductsSection: React.FC = () => {
               </div>
               
               <h3 className="text-2xl font-bold text-gray-900 mb-2">{product.name}</h3>
-              
-              <div className="flex items-baseline gap-3 mb-4">
+                <div className="flex items-baseline gap-3 mb-4">
                 <span className="text-xl font-bold text-red-600">
                   AED {product.discountedPrice.toLocaleString()}
                 </span>
@@ -111,7 +110,10 @@ const ProductsSection: React.FC = () => {
                 </span>
               </div>
 
-              <button className="w-full bg-gray-900 text-white py-3 rounded-full hover:bg-red-600 transition-colors">
+              <button 
+                onClick={() => window.location.href = '/app/cart'} 
+                className="w-full bg-gray-900 text-white py-3 rounded-full hover:bg-red-600 transition-colors"
+              >
                 Configure Now
               </button>
             </div>

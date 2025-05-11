@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Calculator, Clock, Gauge, ArrowUpRight, Car, Shield, ChevronRight, ArrowLeft, Eye, Flame, TrendingUp, Timer } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useCart } from '../../context/CartContext';
 
 const VehicleDetails: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [investmentAmount, setInvestmentAmount] = useState<number>(10000);
+  const { dispatch } = useCart();
   
   const vehicle = {
     id: Number(id),
@@ -173,11 +175,28 @@ const VehicleDetails: React.FC = () => {
               </div>
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                 <span className="text-gray-600">Total Return (3 years)</span>
-                <span className="font-medium">AED {returns.totalReturn.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-              </div>
+                <span className="font-medium">AED {returns.totalReturn.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>              </div>
             </div>
 
-            <button className="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2">
+            <button 
+              onClick={() => {
+                // Create investment item
+                const investmentItem = {
+                  id: vehicle.id,
+                  name: `${vehicle.name} ${vehicle.model} - Investment`,
+                  image: vehicle.images[0],
+                  price: investmentAmount,
+                  location: vehicle.location
+                };
+                
+                // Add to cart
+                dispatch({ type: 'ADD_ITEM', payload: investmentItem });
+                
+                // Navigate to cart page
+                navigate('/app/cart');
+              }}
+              className="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2"
+            >
               <span>Invest Now - Guaranteed Yields in 30 Days</span>
               <ChevronRight className="w-5 h-5" />
             </button>
