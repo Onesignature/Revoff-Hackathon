@@ -4,7 +4,8 @@ const {
   sendChatMessage,
   streamChatMessage,
   getChatHistory,
-  clearChatHistory
+  clearChatHistory,
+  searchCarsWithAI
 } = require('../controllers/chatController');
 
 /**
@@ -136,5 +137,45 @@ router.get('/history/:userId', getChatHistory);
  *         description: Server error
  */
 router.delete('/history/:userId', clearChatHistory);
+
+/**
+ * @swagger
+ * /api/chat/car-search:
+ *   post:
+ *     tags:
+ *       - Chat
+ *     summary: Search for cars using AI
+ *     description: Send a car search query to the AI and get matching cars
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - userId
+ *               - query
+ *             properties:
+ *               userId:
+ *                 type: string
+ *                 description: Unique identifier for the user
+ *               query:
+ *                 type: string
+ *                 description: Car search query (budget, brand, features, etc.)
+ *               model:
+ *                 type: string
+ *                 description: Optional AI model to use
+ *               systemMessage:
+ *                 type: string
+ *                 description: Optional system message to provide additional context
+ *     responses:
+ *       200:
+ *         description: JSON response with matching cars
+ *       400:
+ *         description: Missing required fields
+ *       500:
+ *         description: Server error
+ */
+router.post('/car-search', searchCarsWithAI);
 
 module.exports = router;

@@ -184,9 +184,117 @@ const clearChatHistory = async (req, res) => {
   }
 };
 
+/**
+ * Handle car search queries
+ * @route POST /api/chat/car-search
+ * @access Public
+ */
+const searchCarsWithAI = async (req, res) => {
+  try {
+    const { userId, query, model, systemMessage } = req.body;
+
+    if (!userId || !query) {
+      return res.status(400).json({ error: 'userId and query are required' });
+    }
+
+    // Import wealth model to get car data
+    const wealthModel = require('../models/wealthModel');
+    const carData = wealthModel.getAllVehicles();
+
+    // Get or create session
+    let session = chatModel.getChatSession(userId);
+    if (!session) {
+      session = chatModel.createChatSession(
+        userId,
+        model || "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
+        systemMessage || ""
+      );
+    }
+
+    // Create a system message with car data and instructions
+    const enhancedSystemMessage = `
+You are a car search assistant. Help the user find cars that match their requirements.
+Below is the car data available in our system. Use this data to find the best matches.
+${JSON.stringify(carData)}
+
+IMPORTANT INSTRUCTIONS:
+1. Analyze the user's query and find the best matching cars from the data provided.
+2. Return a JSON response with matched cars, including id, name, type, basePrice, imageUrl, and description.
+3. Include a reasoning field explaining why these cars match the user's criteria.
+4. Format your entire response as valid JSON without any additional text.
+5. Limit results to a maximum of 3 cars.
+6. The response must be in the following structure:
+{
+  "matches": [
+    {
+      "id": "car_id",
+      "name": "Car Name",
+      "type": "Car Type",
+      "price": price_number,
+      "imageUrl": "image_url",
+      "description": "car description"
+    }
+  ],
+  "reasoning": "Why these cars match the search criteria"
+}
+`;
+
+    // Add user query to session
+    chatModel.addMessageToChatSession(userId, "user", query);
+    
+    // Add one-time system message with car data
+    const enhancedMessages = [
+      { role: "system", content: enhancedSystemMessage },
+      { role: "user", content: query }
+    ];
+
+    // Send request to Together AI
+    const response = await togetherClient.chat.completions.create({
+      model: session.model,
+      messages: enhancedMessages,
+      temperature: 0.2, // Lower temperature for more precise, deterministic results
+    });
+
+    // Get the AI response
+    const aiResponse = response.choices[0].message.content;
+    
+    // Store assistant response in session
+    chatModel.addMessageToChatSession(userId, "assistant", aiResponse);    try {
+      // Parse the response as JSON
+      const jsonResponse = JSON.parse(aiResponse);
+      
+      // Ensure all car objects have the required fields
+      if (jsonResponse.matches && Array.isArray(jsonResponse.matches)) {
+        jsonResponse.matches = jsonResponse.matches.map(car => ({
+          id: car.id || `car-${Math.random().toString(36).substring(2, 9)}`,
+          name: car.name || 'Unknown Model',
+          type: car.type || 'Vehicle',
+          basePrice: car.basePrice || car.price || 300000,
+          price: car.price || car.basePrice || 300000,
+          imageUrl: car.imageUrl || 'mercedes/cle.jpg',
+          description: car.description || 'No description available',
+          monthlyRent: car.monthlyRent || Math.round((car.price || car.basePrice || 300000) * 0.03)
+        }));
+      }
+      
+      res.json(jsonResponse);
+    } catch (jsonError) {
+      console.error('Error parsing AI response as JSON:', jsonError);
+      res.json({ 
+        error: "Failed to format response as JSON",
+        rawResponse: aiResponse 
+      });
+    }
+  } catch (error) {
+    console.error('Car search error:', error);
+    res.status(500).json({ error: 'Error processing car search request', details: error.message });
+  }
+};
+
 module.exports = {
   sendChatMessage,
   streamChatMessage,
   getChatHistory,
-  clearChatHistory
+  clearChatHistory,
+  searchCarsWithAI
 };
