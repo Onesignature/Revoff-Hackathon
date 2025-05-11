@@ -1,16 +1,57 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowUp, Info } from 'lucide-react';
+import { ArrowUp, Info, X } from 'lucide-react';
+import { useCart } from '../../context/CartContext';
+import { useNavigate } from 'react-router-dom';
 
-const Dashboard: React.FC = () => {  const [searchQuery, setSearchQuery] = useState('');
+const Dashboard: React.FC = () => {  
+  const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [carResults, setCarResults] = useState<any[]>([]);
   const [currentQuery, setCurrentQuery] = useState<string>('');
   const [reasoning, setReasoning] = useState<string>('');
   const [chatHistory, setChatHistory] = useState<{role: string, content: string}[]>([]);
   const [selectedCar, setSelectedCar] = useState<any>(null);
+  const [showInvestDialog, setShowInvestDialog] = useState(false);
+  const [investmentAmount, setInvestmentAmount] = useState('');
   
   const userId = useRef(`user-${Math.random().toString(36).substring(2, 9)}`);
-  const inputRef = useRef<HTMLInputElement>(null);  const handleSearch = async (e: React.FormEvent) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  
+  const { dispatch } = useCart();
+  const navigate = useNavigate();
+  
+  const handleInvest = () => {
+    setShowInvestDialog(true);
+  };
+  
+  const closeInvestDialog = () => {
+    setShowInvestDialog(false);
+    setInvestmentAmount('');
+  };
+  
+  const addToCart = () => {
+    if (!selectedCar || !investmentAmount || parseFloat(investmentAmount) <= 0) return;
+    
+    dispatch({
+      type: 'ADD_ITEM',
+      payload: {
+        id: selectedCar.id || Math.random(),
+        name: selectedCar.name,
+        image: selectedCar.imageUrl,
+        price: parseFloat(investmentAmount),
+        location: 'Investment',
+        features: [`${selectedCar.name} Investment`, 'Automotive Asset', 'ROI Potential'],
+        rating: 4.8,
+        reviews: 24
+      }
+    });
+    
+    setShowInvestDialog(false);
+    setInvestmentAmount('');
+    navigate('/app/cart');
+  };
+
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
     
@@ -75,6 +116,7 @@ const Dashboard: React.FC = () => {  const [searchQuery, setSearchQuery] = useSt
       setSearchQuery('');
     }
   };
+
   const handleSelectCar = (car: any) => {
     setSelectedCar(car);
   };
@@ -362,9 +404,19 @@ const Dashboard: React.FC = () => {  const [searchQuery, setSearchQuery] = useSt
                   <p className="text-sm font-medium">Monthly rent</p>
                   <p className="text-lg font-semibold">AED {(selectedCar.monthlyRent || 0).toLocaleString()}</p>
                 </div>
-                <button className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors">
-                  View details
-                </button>
+                <div className="flex gap-2">
+                  <button 
+                    className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+                  >
+                    View details
+                  </button>
+                  <button 
+                    onClick={handleInvest}
+                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                  >
+                    Invest
+                  </button>
+                </div>
               </div>
             </>
           ) : (
@@ -391,7 +443,71 @@ const Dashboard: React.FC = () => {  const [searchQuery, setSearchQuery] = useSt
           )}
         </div>
       </div>
-    </div>
+    
+    {/* Investment Dialog */}
+    {showInvestDialog && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-xl p-6 w-full max-w-md relative">
+          <button 
+            onClick={closeInvestDialog}
+            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+          >
+            <X size={20} />
+          </button>
+          
+          <h3 className="text-xl font-medium mb-6">Invest in {selectedCar?.name}</h3>
+          
+          <div className="mb-6">
+            <label htmlFor="investmentAmount" className="block text-sm font-medium text-gray-700 mb-2">
+              Investment Amount (AED)
+            </label>
+            <input
+              id="investmentAmount"
+              type="number"
+              value={investmentAmount}
+              onChange={(e) => setInvestmentAmount(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
+              placeholder="Enter amount"
+              min="1000"
+            />
+            <p className="text-sm text-gray-500 mt-2">
+              Minimum investment: AED 1,000
+            </p>
+          </div>
+          
+          <div className="mb-6">
+            <h4 className="text-sm font-medium mb-2">Investment Details</h4>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <div className="flex justify-between mb-2">
+                <span className="text-gray-600">Vehicle</span>
+                <span className="font-medium">{selectedCar?.name}</span>
+              </div>
+              <div className="flex justify-between mb-2">
+                <span className="text-gray-600">Market Value</span>
+                <span className="font-medium">AED {(selectedCar?.basePrice || selectedCar?.price || 0).toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Est. Annual ROI</span>
+                <span className="font-medium text-green-600">8-12%</span>
+              </div>
+            </div>
+          </div>
+          
+          <button
+            onClick={addToCart}
+            disabled={!investmentAmount || parseFloat(investmentAmount) < 1000}
+            className={`w-full py-3 text-white rounded-lg ${
+              !investmentAmount || parseFloat(investmentAmount) < 1000
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-red-600 hover:bg-red-700'
+            } transition-colors`}
+          >
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    )}
+	</div>
   );
 };
 

@@ -58,11 +58,24 @@ const PaymentSuccess: React.FC = () => {
               <p className="text-xl text-gray-700 mb-6">
                 You have successfully paid AED {paymentDetails.amount.toLocaleString()}
               </p>
-            )}
-            <p className="text-gray-600 mb-8">
+            )}            <p className="text-gray-600 mb-4">
               Thank you for your payment. A confirmation email has been sent to your registered email address.
             </p>
-			<a href='https://sepolia.etherscan.io/tx/0xa12cd792aa380a4c1539c0a7651b853e91893ef3b769e001b90bb1e5feb5e2e2'>Contract Verification Link</a>
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-8">
+              <p className="text-sm text-gray-600 mb-2">Your transaction has been recorded on the blockchain:</p>
+              <a 
+                href='https://sepolia.etherscan.io/tx/0xa12cd792aa380a4c1539c0a7651b853e91893ef3b769e001b90bb1e5feb5e2e2' 
+                className="flex items-center justify-center gap-2 bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors mb-2 font-medium"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                </svg>
+                Verify Contract on Blockchain
+              </a>
+              <p className="text-xs text-center text-gray-500">Blockchain verification ensures transparency and security for your investment</p>
+            </div>
             <div className="flex justify-center gap-4">
               <button
                 onClick={() => navigate('/rent/my-rentals')}
