@@ -224,6 +224,22 @@ const sampleVehicleData = [
     marketShare: 22.3,
     imageUrl: 'mercedes/sclass.jpg',
     description: 'The Mercedes-Benz S-Class sets the standard for luxury sedans, offering pioneering technology, exceptional comfort, and timeless design.'
+  },
+  {//add gac gs3 car with 699000 aed price
+	id: 'v016',
+	name: 'GAC GS3',
+	type: ' SUV',
+	basePrice: 69900,
+	monthlyRent: 2000,
+	expectedROI: 14.0,
+	annualYield: 8.0,
+	riskLevel: 'medium',
+	liquidity: 'medium',
+	volatility: 'medium',
+	marketTrend: 'bullish',
+	marketShare: 15.4,
+	imageUrl: 'mercedes/gs3.webp',
+	description: 'The GAC GS3 is a small SUV that combines modern design with advanced technology, offering a comfortable and stylish driving experience.'
   }
 ];
 
