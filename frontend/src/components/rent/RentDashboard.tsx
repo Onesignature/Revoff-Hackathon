@@ -1,9 +1,150 @@
-import React from 'react';
-import { Calendar, MapPin, Star, Shield, Clock, Car, ArrowRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { Calendar, MapPin, Star, Shield, Clock, Car, ArrowRight, CreditCard, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useCart } from '../../context/CartContext';
+
+interface PaymentModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  carName: string;
+  carImage: string;
+  price: number;
+  days: number;
+  isExtension: boolean;
+  onConfirm: () => void;
+}
+
+const PaymentModal: React.FC<PaymentModalProps> = ({
+  isOpen,
+  onClose,
+  carName,
+  carImage,
+  price,
+  days,
+  isExtension,
+  onConfirm
+}) => {
+  const [selectedDays, setSelectedDays] = useState(days);
+  
+  if (!isOpen) return null;
+  
+  const totalAmount = price * selectedDays;
+  
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-xl p-6 max-w-md w-full">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">{isExtension ? 'Extend Rental' : 'Rent Now'}</h2>
+          <button
+            onClick={onClose}
+            className="p-1 rounded-full hover:bg-gray-100"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        
+        <div className="mb-4">
+          <img
+            src={carImage}
+            alt={carName}
+            className="w-full h-48 object-cover rounded-lg mb-4"
+          />
+          <h3 className="font-medium text-lg mb-2">{carName}</h3>
+          <div className="flex justify-between mb-2">
+            <span className="text-gray-600">Daily Rate:</span>
+            <span className="font-medium">AED {price.toLocaleString()}</span>
+          </div>
+        </div>
+        
+        <div className="mb-6">
+          <label className="block text-sm text-gray-600 mb-1">Number of Days</label>
+          <input
+            type="number"
+            value={selectedDays}
+            onChange={(e) => setSelectedDays(Math.max(1, Number(e.target.value)))}
+            min={1}
+            max={30}
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+          />
+        </div>
+        
+        <div className="flex justify-between mb-6 font-bold">
+          <span>Total Amount:</span>
+          <span>AED {totalAmount.toLocaleString()}</span>
+        </div>
+        
+        <button
+          onClick={onConfirm}
+          className="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2"
+        >
+          <CreditCard className="w-5 h-5" />
+          {isExtension ? 'Pay & Extend' : 'Pay & Rent'}
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const RentDashboard: React.FC = () => {
-  return (
+  const navigate = useNavigate();
+  const { dispatch } = useCart();
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [selectedCar, setSelectedCar] = useState<{
+    id: number;
+    name: string;
+    image: string;
+    price: number;
+    days: number;
+    isExtension: boolean;
+  } | null>(null);
+  
+  const handlePaymentClick = (car: any, days: number, isExtension: boolean) => {
+    setSelectedCar({
+      id: car.id,
+      name: car.name,
+      image: car.image,
+      price: car.price,
+      days,
+      isExtension
+    });
+    setIsPaymentModalOpen(true);
+  };
+  
+  const handlePaymentConfirm = () => {
+    if (!selectedCar) return;
+    
+    // Create rental item to add to cart
+    const rentalItem = {
+      id: selectedCar.id,
+      name: `${selectedCar.name} - ${selectedCar.isExtension ? 'Rental Extension' : 'Rental'} (${selectedCar.days} days)`,
+      image: selectedCar.image,
+      price: selectedCar.price * selectedCar.days,
+    };
+    
+    // Add to cart
+    dispatch({ type: 'ADD_ITEM', payload: rentalItem });
+    
+    // Close modal
+    setIsPaymentModalOpen(false);
+    
+    // Navigate to cart page
+    navigate('/app/cart');
+  };  return (
     <div className="space-y-6">
+      {/* Payment Modal */}
+      {selectedCar && (
+        <PaymentModal
+          isOpen={isPaymentModalOpen}
+          onClose={() => setIsPaymentModalOpen(false)}
+          carName={selectedCar.name}
+          carImage={selectedCar.image}
+          price={selectedCar.price}
+          days={selectedCar.days}
+          isExtension={selectedCar.isExtension}
+          onConfirm={handlePaymentConfirm}
+        />
+      )}
+      
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white rounded-xl p-6">
@@ -42,10 +183,17 @@ const RentDashboard: React.FC = () => {
                 <div className="flex items-center gap-2 mt-2">
                   <Clock className="w-4 h-4 text-gray-400" />
                   <span className="text-sm text-gray-600">2 days remaining</span>
-                </div>
-              </div>
+                </div>              </div>
             </div>
-            <button className="w-full mt-4 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+            <button 
+              onClick={() => handlePaymentClick({
+                id: 999,
+                name: "Mercedes-AMG GT",
+                image: "/mercedes/amg-gt.jpg",
+                price: 2800,
+              }, 7, true)}
+              className="w-full mt-4 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+            >
               Extend Rental
             </button>
           </div>
@@ -107,12 +255,14 @@ const RentDashboard: React.FC = () => {
                 <div className="flex items-center gap-2 mt-2">
                   <Star className="w-4 h-4 text-yellow-400" />
                   <span className="text-sm text-gray-600">{car.rating} ({car.reviews} reviews)</span>
-                </div>
-                <div className="mt-4">
+                </div>                <div className="mt-4">
                   <span className="text-lg font-bold">AED {car.price}</span>
                   <span className="text-gray-600"> / day</span>
                 </div>
-                <button className="w-full mt-4 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                <button 
+                  onClick={() => handlePaymentClick(car, 3, false)}
+                  className="w-full mt-4 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+                >
                   Rent Now
                 </button>
               </div>
