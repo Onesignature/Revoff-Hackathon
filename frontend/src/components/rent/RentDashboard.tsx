@@ -112,13 +112,13 @@ const RentDashboard: React.FC = () => {
   
   const handlePaymentConfirm = () => {
     if (!selectedCar) return;
-    
-    // Create rental item to add to cart
+      // Create rental item to add to cart
     const rentalItem = {
       id: selectedCar.id,
       name: `${selectedCar.name} - ${selectedCar.isExtension ? 'Rental Extension' : 'Rental'} (${selectedCar.days} days)`,
       image: selectedCar.image,
       price: selectedCar.price * selectedCar.days,
+      type: 'rental',
     };
     
     // Add to cart

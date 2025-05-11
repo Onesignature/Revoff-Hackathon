@@ -267,7 +267,8 @@ const Marketplace: React.FC = () => {
       name: `${selectedCar.name} ${selectedCar.model} - Investment`,
       image: selectedCar.image,
       price: amount,
-      location: selectedCar.location
+      location: selectedCar.location,
+      type: 'investment' as 'investment'
     };
     
     // Add to cart

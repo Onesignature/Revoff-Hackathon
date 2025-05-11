@@ -29,8 +29,7 @@ exports.createCheckoutSession = async (req, res) => {
         message: 'Please provide items to checkout' 
       });
     }
-    
-    // Create line items for Stripe
+      // Create line items for Stripe
     const lineItems = items.map(item => ({
       price_data: {
         currency: 'aed',
@@ -41,14 +40,19 @@ exports.createCheckoutSession = async (req, res) => {
         unit_amount: Math.round(item.price * 100), // Stripe expects amount in cents
       },
       quantity: 1,
-    }));
+    }));    // Determine if this is a rental or investment based on name and type property
+    const isRental = items.some(item => 
+      (item.name && item.name.toLowerCase().includes('rental')) || 
+      (item.type && item.type.toLowerCase() === 'rental')
+    );
+    const paymentType = isRental ? 'rental' : 'investment';
 
     // Create Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
-      success_url: `${req.headers.origin}/app/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${req.headers.origin}/app/payment/success?session_id={CHECKOUT_SESSION_ID}&type=${paymentType}`,
       cancel_url: `${req.headers.origin}/app/cart`,
     });
 

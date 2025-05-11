@@ -5,6 +5,7 @@ interface CartItem {
   name: string;
   image: string;
   price: number;
+  type?: 'investment' | 'rental'; // Added to differentiate between rental and investment
   location?: string; // Added to store product location
   features?: string[]; // Added to store product features
   rating?: number; // Added to store product rating

@@ -176,9 +176,7 @@ const VehicleDetails: React.FC = () => {
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                 <span className="text-gray-600">Total Return (3 years)</span>
                 <span className="font-medium">AED {returns.totalReturn.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>              </div>
-            </div>
-
-            <button 
+            </div>            <button 
               onClick={() => {
                 // Create investment item
                 const investmentItem = {
@@ -186,7 +184,8 @@ const VehicleDetails: React.FC = () => {
                   name: `${vehicle.name} ${vehicle.model} - Investment`,
                   image: vehicle.images[0],
                   price: investmentAmount,
-                  location: vehicle.location
+                  location: vehicle.location,
+                  type: 'investment' as 'investment'
                 };
                 
                 // Add to cart

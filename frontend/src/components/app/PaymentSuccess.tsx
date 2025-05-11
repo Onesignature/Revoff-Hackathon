@@ -3,20 +3,20 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { CheckCircle, ArrowLeft } from 'lucide-react';
 import { verifyPayment } from '../../services/paymentService';
 
-const PaymentSuccess: React.FC = () => {
-  const navigate = useNavigate();
+const PaymentSuccess: React.FC = () => {  const navigate = useNavigate();
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
   const [paymentDetails, setPaymentDetails] = useState<{
     success: boolean;
     amount?: number;
+    paymentType?: 'investment' | 'rental';
   }>({
     success: false,
   });
-  useEffect(() => {
-    const checkPaymentStatus = async () => {
+  useEffect(() => {    const checkPaymentStatus = async () => {
       const params = new URLSearchParams(location.search);
       const sessionId = params.get('session_id');
+      const paymentType = params.get('type');
 
       if (!sessionId) {
         setIsLoading(false);
@@ -24,11 +24,10 @@ const PaymentSuccess: React.FC = () => {
       }
 
       try {
-        const data = await verifyPayment(sessionId);
-
-        setPaymentDetails({
+        const data = await verifyPayment(sessionId);        setPaymentDetails({
           success: data.success,
           amount: data.session?.amount_total ? data.session.amount_total / 100 : undefined,
+          paymentType: paymentType || 'investment',
         });
       } catch (error) {
         console.error('Error verifying payment:', error);
@@ -60,8 +59,7 @@ const PaymentSuccess: React.FC = () => {
               </p>
             )}            <p className="text-gray-600 mb-4">
               Thank you for your payment. A confirmation email has been sent to your registered email address.
-            </p>
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-8">
+            </p>            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-8">
               <p className="text-sm text-gray-600 mb-2">Your transaction has been recorded on the blockchain:</p>
               <a 
                 href='https://sepolia.etherscan.io/tx/0xa12cd792aa380a4c1539c0a7651b853e91893ef3b769e001b90bb1e5feb5e2e2' 
@@ -74,17 +72,26 @@ const PaymentSuccess: React.FC = () => {
                 </svg>
                 Verify Contract on Blockchain
               </a>
-              <p className="text-xs text-center text-gray-500">Blockchain verification ensures transparency and security for your investment</p>
+              <p className="text-xs text-center text-gray-500">Blockchain verification ensures transparency and security for your {paymentDetails.paymentType === 'rental' ? 'rental' : 'investment'}</p>
             </div>
             <div className="flex justify-center gap-4">
+              {paymentDetails.paymentType === 'rental' ? (
+                <button
+                  onClick={() => navigate('/rent/my-rentals')}
+                  className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                >
+                  View My Rentals
+                </button>
+              ) : (
+                <button
+                  onClick={() => navigate('/app/portfolio')}
+                  className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                >
+                  View My Portfolio
+                </button>
+              )}
               <button
-                onClick={() => navigate('/rent/my-rentals')}
-                className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-              >
-                View My Rentals
-              </button>
-              <button
-                onClick={() => navigate('/app/dashboard')}
+                onClick={() => navigate(paymentDetails.paymentType === 'rental' ? '/rent/dashboard' : '/app/dashboard')}
                 className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
               >
                 <ArrowLeft className="w-5 h-5" />
