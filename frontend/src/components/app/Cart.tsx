@@ -1,11 +1,39 @@
-import React from 'react';
-import { Trash2, Plus, Minus } from 'lucide-react';
+import React, { useState } from 'react';
+import { Trash2, Plus, Minus, Loader2 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
+import { useStripe } from '@stripe/react-stripe-js';
+import { createCheckoutSession } from '../../services/paymentService';
 
 const Cart: React.FC = () => {
   const { state, dispatch } = useCart();
+  const stripe = useStripe();
+  const [isLoading, setIsLoading] = useState(false);
   
   const total = state.items.reduce((sum, item) => sum + item.price, 0);
+  const handlePayment = async () => {
+    if (!stripe || state.items.length === 0) return;
+
+    try {
+      setIsLoading(true);
+      
+      // Create checkout session using the payment service
+      const data = await createCheckoutSession(state.items);
+
+      if (!data.success) {
+        console.error('Error creating checkout session:', data.message);
+        return;
+      }
+
+      // Redirect to Stripe Checkout
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+      }
+    } catch (error) {
+      console.error('Error initiating payment:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -68,8 +96,23 @@ const Cart: React.FC = () => {
           <h2 className="text-xl font-semibold">Total</h2>
           <div className="text-3xl font-bold">AED {total.toLocaleString()}</div>
 
-          <button className="w-full mt-4 flex items-center justify-center bg-red-600 text-white px-4 py-3 rounded-lg hover:bg-red-700 transition-colors">
-            Pay Now
+          <button 
+            onClick={handlePayment}
+            disabled={isLoading || state.items.length === 0}
+            className={`w-full mt-4 flex items-center justify-center ${
+              isLoading || state.items.length === 0 
+                ? 'bg-gray-400 cursor-not-allowed' 
+                : 'bg-red-600 hover:bg-red-700'
+            } text-white px-4 py-3 rounded-lg transition-colors`}
+          >
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Processing...
+              </div>
+            ) : (
+              'Pay Now'
+            )}
           </button>
         </div>
       </div>

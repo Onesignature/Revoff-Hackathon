@@ -10,19 +10,26 @@ const serverRoutes = require('./routes/serverRoutes');
 const productRoutes = require('./routes/productRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const wealthRoutes = require('./routes/wealthRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 
-// Load environment variables from .env file in root directory
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+// Load environment variables from .env file in current directory
+dotenv.config();
 
 // Debug environment variables
 console.log('Environment variables loaded:');
 console.log('TOGETHER_API_KEY:', process.env.TOGETHER_API_KEY ? 'Set (hidden for security)' : 'Not set');
+console.log('STRIPE_SECRET_KEY:', process.env.STRIPE_SECRET_KEY ? 'Set (hidden for security)' : 'Not set');
 
 // Initialize express app
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173', // Specify the exact frontend origin
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -39,6 +46,7 @@ app.get('/', (req, res) => {
 app.use('/api/server', serverRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/payment', paymentRoutes);
 app.use('/api/wealth', wealthRoutes);
 
 // Swagger API Documentation

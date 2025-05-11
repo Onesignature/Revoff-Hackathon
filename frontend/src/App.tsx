@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
+import { Elements } from '@stripe/react-stripe-js';
+import stripePromise from './utils/stripe';
 import HeroSection from './components/HeroSection';
 import FeaturesSection from './components/FeaturesSection';
 import SpecsSection from './components/SpecsSection';
@@ -28,6 +30,7 @@ import AIWealthManager from './components/app/AIWealthManager';
 import Rewards from './components/app/Rewards';
 import Support from './components/app/Support';
 import Cart from './components/app/Cart';
+import PaymentSuccess from './components/app/PaymentSuccess';
 import Footer from './components/Footer';
 
 const HomePage = () => (
@@ -47,15 +50,15 @@ function App() {
     // Update the page title
     document.title = 'REVOFF - Experience Pure Power';
   }, []);
-
   return (
     <Router>
-      <CartProvider>
-        <main className="min-h-screen">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/auth" element={<AuthPage />} />
-            <Route path="/rent-cars" element={<Rent />} />
+      <Elements stripe={stripePromise}>
+        <CartProvider>
+          <main className="min-h-screen">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/auth" element={<AuthPage />} />
+              <Route path="/rent-cars" element={<Rent />} />
             <Route path="/app" element={<AppLayout />}>
               <Route index element={<Navigate to="/app/dashboard" replace />} />
               <Route path="dashboard" element={<Dashboard />} />
@@ -63,10 +66,10 @@ function App() {
               <Route path="marketplace/:id" element={<VehicleDetails />} />
               <Route path="portfolio" element={<Portfolio />} />
               <Route path="wallet" element={<Wallet />} />
-              <Route path="ai-wealth-manager" element={<AIWealthManager />} />
-              <Route path="rewards" element={<Rewards />} />
+              <Route path="ai-wealth-manager" element={<AIWealthManager />} />              <Route path="rewards" element={<Rewards />} />
               <Route path="support" element={<Support />} />
               <Route path="cart" element={<Cart />} />
+              <Route path="payment/success" element={<PaymentSuccess />} />
             </Route>
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
@@ -80,9 +83,9 @@ function App() {
               <Route path="favorites" element={<RentFavorites />} />
               <Route path="support" element={<Support />} />
             </Route>
-          </Routes>
-        </main>
+          </Routes>        </main>
       </CartProvider>
+    </Elements>
     </Router>
   );
 }
