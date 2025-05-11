@@ -209,9 +209,7 @@ const searchCarsWithAI = async (req, res) => {
         model || "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
         systemMessage || ""
       );
-    }
-
-    // Create a system message with car data and instructions
+    }    // Create a system message with car data and instructions
     const enhancedSystemMessage = `
 You are a car search assistant. Help the user find cars that match their requirements.
 Below is the car data available in our system. Use this data to find the best matches.
@@ -219,11 +217,11 @@ ${JSON.stringify(carData)}
 
 IMPORTANT INSTRUCTIONS:
 1. Analyze the user's query and find the best matching cars from the data provided.
-2. Return a JSON response with matched cars, including id, name, type, basePrice, imageUrl, and description.
+2. You must ONLY respond with JSON. No preamble, no explanations outside the JSON.
 3. Include a reasoning field explaining why these cars match the user's criteria.
-4. Format your entire response as valid JSON without any additional text.
-5. Limit results to a maximum of 10 cars.
-6. The response must be in the following structure:
+4. Limit results to a maximum of 10 cars.
+5. Use type "price" instead of "basePrice" in your response.
+6. The response must follow this exact structure:
 {
   "matches": [
     {
@@ -246,13 +244,39 @@ IMPORTANT INSTRUCTIONS:
     const enhancedMessages = [
       { role: "system", content: enhancedSystemMessage },
       { role: "user", content: query }
-    ];
+    ];    // Define the JSON schema for the response
+    const responseSchema = {
+      type: "object",
+      properties: {
+        matches: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              name: { type: "string" },
+              type: { type: "string" },
+              price: { type: "number" },
+              imageUrl: { type: "string" },
+              description: { type: "string" }
+            },
+            required: ["id", "name", "type", "price", "imageUrl", "description"]
+          }
+        },
+        reasoning: { type: "string" }
+      },
+      required: ["matches", "reasoning"]
+    };
 
-    // Send request to Together AI
+    // Send request to Together AI with JSON mode enabled
     const response = await togetherClient.chat.completions.create({
       model: session.model,
       messages: enhancedMessages,
       temperature: 0.2, // Lower temperature for more precise, deterministic results
+      response_format: {
+        type: "json_object",
+        schema: responseSchema
+      }
     });
 
     // Get the AI response
@@ -260,27 +284,41 @@ IMPORTANT INSTRUCTIONS:
     
     // Store assistant response in session
     chatModel.addMessageToChatSession(userId, "assistant", aiResponse);    try {
-      // Parse the response as JSON
+      // Since we're using JSON mode, the response should already be valid JSON
+      // but we'll still parse it to be safe
       const jsonResponse = JSON.parse(aiResponse);
       
-      // Ensure all car objects have the required fields
+      // Ensure all car objects have the required fields and standardize the properties
       if (jsonResponse.matches && Array.isArray(jsonResponse.matches)) {
         jsonResponse.matches = jsonResponse.matches.map(car => ({
           id: car.id || `car-${Math.random().toString(36).substring(2, 9)}`,
           name: car.name || 'Unknown Model',
           type: car.type || 'Vehicle',
-          basePrice: car.basePrice || car.price || 300000,
-          price: car.price || car.basePrice || 300000,
+          basePrice: car.price || 300000,  // Use price from response as basePrice
+          price: car.price || 300000,      // Keep price field for consistency
           imageUrl: car.imageUrl || 'mercedes/cle.jpg',
           description: car.description || 'No description available',
-          monthlyRent: car.monthlyRent || Math.round((car.price || car.basePrice || 300000) * 0.03)
+          monthlyRent: Math.round((car.price || 300000) * 0.03)
         }));
       }
       
-      res.json(jsonResponse);
-    } catch (jsonError) {
+      res.json(jsonResponse);    } catch (jsonError) {
       console.error('Error parsing AI response as JSON:', jsonError);
-      res.json({ 
+      // Even with JSON mode, sometimes there can still be parsing issues
+      // Try to extract JSON if the response has markdown code blocks
+      try {
+        // Try to extract JSON from markdown code blocks if present
+        const jsonMatch = aiResponse.match(/```(?:json)?\s*([\s\S]*?)```/);
+        if (jsonMatch && jsonMatch[1]) {
+          const extractedJson = JSON.parse(jsonMatch[1].trim());
+          return res.json(extractedJson);
+        }
+      } catch (extractError) {
+        console.error('Failed to extract JSON from response:', extractError);
+      }
+      
+      // If we can't parse or extract JSON, return an error with the raw response
+      res.status(500).json({ 
         error: "Failed to format response as JSON",
         rawResponse: aiResponse 
       });

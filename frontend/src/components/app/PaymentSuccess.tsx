@@ -62,6 +62,7 @@ const PaymentSuccess: React.FC = () => {
             <p className="text-gray-600 mb-8">
               Thank you for your payment. A confirmation email has been sent to your registered email address.
             </p>
+			<a href='https://sepolia.etherscan.io/tx/0xa12cd792aa380a4c1539c0a7651b853e91893ef3b769e001b90bb1e5feb5e2e2'>Contract Verification Link</a>
             <div className="flex justify-center gap-4">
               <button
                 onClick={() => navigate('/rent/my-rentals')}
