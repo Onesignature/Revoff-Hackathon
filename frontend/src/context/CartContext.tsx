@@ -10,6 +10,13 @@ interface CartItem {
   features?: string[]; // Added to store product features
   rating?: number; // Added to store product rating
   reviews?: number; // Added to store product reviews
+  rentalDetails?: {
+    startDate: string;
+    endDate: string;
+    days: number;
+    pickupTime: string;
+    location: string;
+  };
 }
 
 interface CartState {

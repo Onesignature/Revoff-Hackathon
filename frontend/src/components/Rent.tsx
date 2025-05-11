@@ -92,19 +92,54 @@ const Rent: React.FC = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [location, setLocation] = useState('');
+  const [pickupTime, setPickupTime] = useState('10:00');
+  const [rentalDays, setRentalDays] = useState(3); // Default rental period
 
+  // Calculate rental days when dates change
+  React.useEffect(() => {
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const diffTime = Math.abs(end.getTime() - start.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      setRentalDays(diffDays > 0 ? diffDays : 1);
+    }
+  }, [startDate, endDate]);
   const handleRentNow = (car: RentalCar) => {
-    dispatch({ 
-      type: 'ADD_ITEM', 
+    const formattedStartDate = startDate ? new Date(startDate).toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric',
+      year: 'numeric'
+    }) : 'Flexible';
+    
+    const formattedEndDate = endDate ? new Date(endDate).toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric',
+      year: 'numeric'
+    }) : 'Flexible';
+    
+    const rentalPeriod = startDate && endDate 
+      ? `${formattedStartDate} to ${formattedEndDate} (${rentalDays} days)`
+      : `${rentalDays} days`;
+      
+    dispatch({      type: 'ADD_ITEM', 
       payload: { 
         id: car.id,
-        name: car.name,
+        name: `${car.name} - Rental for ${rentalPeriod}`,
         image: car.image,
-        price: car.price,
+        price: car.price * rentalDays, // Multiply by number of days
         location: car.location,
         features: car.features,
         rating: car.rating,
         reviews: car.reviews,
+        type: 'rental' as 'rental',
+        rentalDetails: {
+          startDate: startDate || '',
+          endDate: endDate || '',
+          days: rentalDays,
+          pickupTime: pickupTime,
+          location: location || car.location
+        }
       }
     });
     navigate('/app/cart');
@@ -129,12 +164,9 @@ const Rent: React.FC = () => {
             Experience the thrill of driving the world's finest vehicles
           </p>
         </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* Search Section */}
-        <div className="bg-white rounded-xl p-6 -mt-24 relative z-20 shadow-xl mb-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      </div>      <div className="max-w-7xl mx-auto px-4 py-12">
+        {/* Search Section */}        <div className="bg-white rounded-xl p-6 -mt-24 relative z-20 shadow-xl mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div className="relative">
               <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
@@ -155,6 +187,24 @@ const Rent: React.FC = () => {
                 className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                 placeholder="End Date"
               />
+              {startDate && endDate && (
+                <div className="absolute -bottom-5 left-0 text-sm text-green-600 font-medium">
+                  {rentalDays} days selected
+                </div>
+              )}
+            </div>
+            
+            <div className="relative">
+              <Clock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="time"
+                value={pickupTime}
+                onChange={(e) => setPickupTime(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+              />
+              <div className="absolute -bottom-5 left-0 text-xs text-gray-500">
+                Pickup time
+              </div>
             </div>
             
             <div className="relative">
@@ -246,8 +296,7 @@ const Rent: React.FC = () => {
                     </span>
                   ))}
                 </div>
-                
-                <div className="space-y-4">
+                  <div className="space-y-4">
                   <div className="flex items-center gap-3 text-sm text-gray-600">
                     <Shield className="w-4 h-4" />
                     <span>Insurance included</span>
@@ -262,6 +311,16 @@ const Rent: React.FC = () => {
                   </div>
                 </div>
                 
+                {/* Total price for selected rental period */}
+                {startDate && endDate && (
+                  <div className="mt-4 bg-gray-50 p-3 rounded-lg">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Total for {rentalDays} days:</span>
+                      <span className="font-bold text-lg">AED {(car.price * rentalDays).toLocaleString()}</span>
+                    </div>
+                  </div>
+                )}
+                
                 <button 
                   className={`w-full mt-6 px-6 py-3 rounded-lg text-white font-medium transition-colors ${
                     car.available 
@@ -271,7 +330,7 @@ const Rent: React.FC = () => {
                   disabled={!car.available}
                   onClick={car.available ? () => handleRentNow(car) : undefined}
                 >
-                  {car.available ? 'Rent Now' : 'Not Available'}
+                  {car.available ? `Rent for ${rentalDays} days` : 'Not Available'}
                 </button>
               </div>
             </div>
